@@ -109,7 +109,8 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="p_input_to_charger" edge="1" parent="1" source="input_protection" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="solar_charger" value="充电输入">
-          <mxGeometry relative="1" as="geometry">
+          <mxGeometry relative="1" x="0.0828" y="8" as="geometry">
+            <mxPoint as="offset" />
             <Array as="points">
               <mxPoint x="400" y="308" />
             </Array>
@@ -126,17 +127,21 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="p_bus_to_load" edge="1" parent="1" source="system_bus" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="load" value="负载供电">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" x="0.0067" y="8" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="p_bus_to_reg" edge="1" parent="1" source="system_bus" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="regulator" value="系统母线供电">
-          <mxGeometry relative="1" as="geometry">
+          <mxGeometry relative="1" x="0.0517" y="10" as="geometry">
+            <mxPoint as="offset" />
             <Array as="points">
               <mxPoint x="1245" y="280" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="p_reg_to_esp" edge="1" parent="1" source="regulator" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="esp32" value="3.3V 供电">
-          <mxGeometry relative="1" as="geometry">
+          <mxGeometry relative="1" x="-0.1575" y="-10" as="geometry">
+            <mxPoint as="offset" />
             <Array as="points">
               <mxPoint x="1530" y="680" />
               <mxPoint x="1058" y="680" />
@@ -144,7 +149,8 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="p_reg_to_adc" edge="1" parent="1" source="regulator" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="adc" value="3.3V 供电">
-          <mxGeometry relative="1" as="geometry">
+          <mxGeometry relative="1" x="0.0042" y="-10" as="geometry">
+            <mxPoint as="offset" />
             <Array as="points">
               <mxPoint x="1530" y="680" />
               <mxPoint x="795" y="680" />
@@ -159,10 +165,13 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="p_protection_to_battery" edge="1" parent="1" source="protection" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;startArrow=block;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="battery" value="受保护电池连接">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" x="0.0667" y="8" as="geometry">
+            <mxPoint y="1" as="offset" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="p_protection_to_oring" edge="1" parent="1" source="protection" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;dashed=1;" target="oring" value="地影区电池供负载路径">
-          <mxGeometry relative="1" as="geometry">
+          <mxGeometry relative="1" x="0.1228" y="5" as="geometry">
+            <mxPoint as="offset" />
             <Array as="points">
               <mxPoint x="545" y="385" />
               <mxPoint x="810" y="385" />
@@ -171,7 +180,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="p_battery_to_heater" edge="1" parent="1" source="battery" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="heater_resistors" value="加热 / 均衡功率">
-          <mxGeometry relative="1" x="-0.0667" y="12" as="geometry">
+          <mxGeometry relative="1" x="-0.0667" y="10" as="geometry">
             <mxPoint as="offset" />
             <Array as="points">
               <mxPoint x="1030" y="530" />
@@ -204,16 +213,27 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="s_sensing_to_adc" edge="1" parent="1" source="sensing" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#0066cc;fontSize=11;" target="adc" value="滤波后的模拟信号">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" y="13" as="geometry">
+            <mxPoint y="1" as="offset" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="s_adc_to_esp" edge="1" parent="1" source="adc" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#0066cc;fontSize=11;" target="esp32" value="I2C 测量数据">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" y="13" as="geometry">
+            <mxPoint y="1" as="offset" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="s_esp_to_firmware" edge="1" parent="1" source="esp32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#0066cc;fontSize=11;" target="firmware" value="测量更新 / 控制决策">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" x="0.036" y="10" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1210" y="822" />
+              <mxPoint x="1210" y="822" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="s_firmware_to_charger" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#0066cc;fontSize=11;" value="充电 EN / 两档电流控制">
-          <mxGeometry relative="1" as="geometry">
+          <mxGeometry relative="1" x="-0.009" y="-10" as="geometry">
+            <mxPoint as="offset" />
             <Array as="points">
               <mxPoint x="1394.96" y="400" />
               <mxPoint x="704.96" y="400" />
