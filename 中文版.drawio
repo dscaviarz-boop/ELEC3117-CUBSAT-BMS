@@ -1,101 +1,129 @@
 <mxfile host="app.diagrams.net">
   <diagram name="第 1 页" id="MmfuNnR-U3aCNoGkptcp">
-    <mxGraphModel dx="1155" dy="668" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1050" math="0" shadow="0">
+    <mxGraphModel dx="1004" dy="581" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1050" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=24;fontStyle=1" value="CubeSat 2S18650 电池管理系统：MPPT 太阳能充电、电池供电与加热均衡控制" vertex="1">
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=24;fontStyle=1" value="CubeSat 2S18650 电池管理系统：低成本太阳能充电、电池供电与加热均衡控制" vertex="1">
           <mxGeometry height="40" width="1380" x="210" y="25" as="geometry" />
         </mxCell>
-        <mxCell id="box_power" parent="1" style="rounded=1;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;arcSize=8;fontSize=17;fontStyle=1;verticalAlign=top;spacingTop=8;fillColor=#f8cecc;strokeColor=#b85450;" value="日照区 / 地影区电源路径" vertex="1">
-          <mxGeometry height="260" width="1710" x="40" y="90" as="geometry" />
+        <mxCell id="box_power" parent="1" style="rounded=1;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;arcSize=8;fontSize=17;fontStyle=1;verticalAlign=top;spacingTop=8;fillColor=#f8cecc;strokeColor=#b85450;" value="日照区 / 地影区电源路径：低成本 OR-ing 结构" vertex="1">
+          <mxGeometry height="280" width="1710" x="40" y="90" as="geometry" />
         </mxCell>
         <mxCell id="box_battery" parent="1" style="rounded=1;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;arcSize=8;fontSize=17;fontStyle=1;verticalAlign=top;spacingTop=8;fillColor=#d5e8d4;strokeColor=#82b366;" value="2S18650 电池组、硬件保护、加热 / 均衡" vertex="1">
-          <mxGeometry height="250" width="1050" x="350" y="390" as="geometry" />
+          <mxGeometry height="250" width="1050" x="350" y="410" as="geometry" />
         </mxCell>
-        <mxCell id="box_control" parent="1" style="rounded=1;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;arcSize=8;fontSize=17;fontStyle=1;verticalAlign=top;spacingTop=8;fillColor=#e1d5e7;strokeColor=#9673a6;" value="测量、MPPT 控制、遥测与调试" vertex="1">
-          <mxGeometry height="250" width="1050" x="350" y="680" as="geometry" />
+        <mxCell id="box_control" parent="1" style="rounded=1;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;arcSize=8;fontSize=17;fontStyle=1;verticalAlign=top;spacingTop=8;fillColor=#e1d5e7;strokeColor=#9673a6;" value="测量、简化 MPPT 控制、遥测与调试" vertex="1">
+          <mxGeometry height="250" width="1050" x="350" y="700" as="geometry" />
         </mxCell>
         <mxCell id="legend" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=16;fontStyle=1;verticalAlign=top;spacingTop=8;" value="图例" vertex="1">
-          <mxGeometry height="140" width="240" x="60" y="740" as="geometry" />
+          <mxGeometry height="140" width="240" x="60" y="760" as="geometry" />
         </mxCell>
-        <mxCell id="solar" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;" value="太阳能板 / 演示 PV 输入&lt;br&gt;变电压输入&lt;br&gt;限流型外部电源" vertex="1">
-          <mxGeometry height="75" width="170" x="85" y="170" as="geometry" />
+        <mxCell id="solar" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;" value="太阳能板 / 演示 PV 输入&lt;br&gt;9–12V 变电压输入&lt;br&gt;限流型外部电源" vertex="1">
+          <mxGeometry height="75" width="170" x="85" y="175" as="geometry" />
         </mxCell>
         <mxCell id="input_protection" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;" value="输入保护&lt;br&gt;PTC 可恢复保险丝 + TVS&lt;br&gt;反接保护" vertex="1">
-          <mxGeometry height="75" width="180" x="330" y="170" as="geometry" />
+          <mxGeometry height="75" width="180" x="310" y="175" as="geometry" />
         </mxCell>
-        <mxCell id="mppt_powerpath" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="MPPT 充电 + SYS/BAT 电源路径控制器&lt;br&gt;2S 锂电池 CC/CV 充电&lt;br&gt;通过充电电流控制实现 MPPT&lt;br&gt;日照区：太阳能供负载并充电&lt;br&gt;地影区：电池反向支撑 SYS 母线" vertex="1">
-          <mxGeometry height="125" width="260" x="590" y="145" as="geometry" />
+        <mxCell id="solar_bus_reg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="太阳能侧 DC/DC 稳压级&lt;br&gt;建立日照区系统母线&lt;br&gt;可用低成本 Buck / Buck-Boost&lt;br&gt;给 Load 优先供电" vertex="1">
+          <mxGeometry height="95" width="210" x="560" y="150" as="geometry" />
         </mxCell>
-        <mxCell id="system_bus" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="系统母线 SYS&lt;br&gt;日照区：太阳能供电&lt;br&gt;地影区：电池供电&lt;br&gt;所有负载从此取电" vertex="1">
-          <mxGeometry height="90" width="210" x="950" y="160" as="geometry" />
+        <mxCell id="solar_charger" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="低成本 2S 太阳能充电器&lt;br&gt;CN3791 模块 / BQ24650 可选&lt;br&gt;2S 锂电 CC/CV 充电&lt;br&gt;EN 或两档电流控制实现简化 MPPT" vertex="1">
+          <mxGeometry height="95" width="230" x="560" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="oring" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="低成本电源 OR-ing&lt;br&gt;肖特基二极管 / P-MOS Ideal Diode&lt;br&gt;太阳能侧与电池侧汇合&lt;br&gt;防止反灌电流" vertex="1">
+          <mxGeometry height="95" width="220" x="845" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="system_bus" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="系统母线 SYS&lt;br&gt;日照区：太阳能侧供电&lt;br&gt;地影区：电池侧供电&lt;br&gt;所有负载从此取电" vertex="1">
+          <mxGeometry height="90" width="210" x="1140" y="153" as="geometry" />
         </mxCell>
         <mxCell id="load" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;" value="CubeSat 负载输出&lt;br&gt;EPS / Payload / 演示负载" vertex="1">
-          <mxGeometry height="75" width="180" x="1245" y="170" as="geometry" />
+          <mxGeometry height="75" width="180" x="1440" y="160" as="geometry" />
         </mxCell>
         <mxCell id="regulator" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;" value="3.3V Buck 稳压器&lt;br&gt;给 ESP32、ADC、传感器供电" vertex="1">
-          <mxGeometry height="75" width="180" x="1510" y="170" as="geometry" />
+          <mxGeometry height="75" width="180" x="1440" y="265" as="geometry" />
         </mxCell>
-        <mxCell id="mode_note" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;align=left;spacing=8;" value="工作模式说明：&lt;br&gt;日照区：PV → MPPT/Power Path → SYS → Load，同时 PV → Battery 充电&lt;br&gt;地影区：Battery → 保护 IC → BAT/SYS Power Path → SYS → Load" vertex="1">
-          <mxGeometry height="55" width="460" x="1080" y="270" as="geometry" />
+        <mxCell id="mode_note" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;align=left;spacing=8;" value="工作模式说明：&lt;br&gt;日照区：PV → DC/DC → OR-ing → SYS → Load，同时 PV → 2S Charger → Battery 充电&lt;br&gt;地影区：Battery → 保护板 / 保护 IC → OR-ing → SYS → Load" vertex="1">
+          <mxGeometry height="65" width="610" x="820" y="285" as="geometry" />
         </mxCell>
-        <mxCell id="protection" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="2S 电池硬件保护 IC&lt;br&gt;过压 / 欠压 / 过流 / 短路 / 过温&lt;br&gt;CHG / DSG MOSFETs&lt;br&gt;独立安全保护层" vertex="1">
-          <mxGeometry height="95" width="230" x="430" y="470" as="geometry" />
+        <mxCell id="protection" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="2S 电池保护板 / 保护 IC&lt;br&gt;过压 / 欠压 / 过流 / 短路 / 过温&lt;br&gt;CHG / DSG MOSFETs&lt;br&gt;独立安全保护层" vertex="1">
+          <mxGeometry height="95" width="230" x="430" y="490" as="geometry" />
         </mxCell>
         <mxCell id="battery" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" value="2S18650 电池组&lt;br&gt;B+ / BM / B- 抽头&lt;br&gt;Cell 2：B+ 到 BM&lt;br&gt;Cell 1：BM 到 B-" vertex="1">
-          <mxGeometry height="105" width="230" x="735" y="465" as="geometry" />
+          <mxGeometry height="105" width="230" x="735" y="485" as="geometry" />
         </mxCell>
         <mxCell id="heater_resistors" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;" value="双路均衡 / 加热电阻&lt;br&gt;R2 跨接 Cell 2：B+ ↔ BM&lt;br&gt;R1 跨接 Cell 1：BM ↔ B-&lt;br&gt;主要功能：加热&lt;br&gt;辅助功能：均衡" vertex="1">
-          <mxGeometry height="95" width="270" x="1040" y="450" as="geometry" />
+          <mxGeometry height="95" width="270" x="1040" y="470" as="geometry" />
         </mxCell>
         <mxCell id="heater_driver" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;" value="加热 / 均衡 MOSFET 驱动&lt;br&gt;R1 / R2 独立 PWM 档位&lt;br&gt;由 ESP32 控制" vertex="1">
-          <mxGeometry height="55" width="270" x="1040" y="565" as="geometry" />
+          <mxGeometry height="55" width="270" x="1040" y="585" as="geometry" />
         </mxCell>
         <mxCell id="sensing" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;" value="传感前端&lt;br&gt;PV 电压 / 输入电流&lt;br&gt;B+ 和 BM 分压测量&lt;br&gt;电池电流采样电阻 + 放大器&lt;br&gt;电芯 / 加热区温度传感器&lt;br&gt;RC 滤波 + ADC 输入保护" vertex="1">
-          <mxGeometry height="125" width="240" x="395" y="740" as="geometry" />
+          <mxGeometry height="125" width="240" x="395" y="760" as="geometry" />
         </mxCell>
         <mxCell id="adc" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;" value="外置 ADC&lt;br&gt;候选：ADS1115&lt;br&gt;16-bit I2C ADC&lt;br&gt;用于关键测量" vertex="1">
-          <mxGeometry height="85" width="180" x="705" y="760" as="geometry" />
+          <mxGeometry height="85" width="180" x="705" y="780" as="geometry" />
         </mxCell>
         <mxCell id="esp32" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;" value="ESP32-WROOM&lt;br&gt;MCU + WiFi&lt;br&gt;I2C / PWM / GPIO / UART&lt;br&gt;遥测 + 远程控制" vertex="1">
-          <mxGeometry height="105" width="205" x="955" y="750" as="geometry" />
+          <mxGeometry height="105" width="205" x="955" y="770" as="geometry" />
         </mxCell>
-        <mxCell id="firmware" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;" value="BMS / MPPT 固件逻辑&lt;br&gt;日照区：太阳能供负载 + 给电池充电&lt;br&gt;通过调节充电电流实现 MPPT&lt;br&gt;地影区：电池给负载供电&lt;br&gt;根据电芯状态调节 heater 占空比实现均衡" vertex="1">
-          <mxGeometry height="130" width="250" x="1230" y="735" as="geometry" />
+        <mxCell id="firmware" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;" value="BMS / 简化 MPPT 固件逻辑&lt;br&gt;日照区：太阳能供负载 + 给电池充电&lt;br&gt;PV 电压过低时降低 / 关闭充电&lt;br&gt;地影区：电池给负载供电&lt;br&gt;根据电芯状态调节 heater 占空比实现均衡" vertex="1">
+          <mxGeometry height="130" width="270" x="1230" y="755" as="geometry" />
         </mxCell>
         <mxCell id="remote" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" value="远程面板 / PC / 手机&lt;br&gt;WiFi 遥测&lt;br&gt;远程 heater 指令" vertex="1">
-          <mxGeometry height="75" width="180" x="1530" y="725" as="geometry" />
+          <mxGeometry height="75" width="180" x="1530" y="745" as="geometry" />
         </mxCell>
         <mxCell id="debug" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;" value="调试 / 可靠性模块&lt;br&gt;烧录调试 header&lt;br&gt;状态指示 LED&lt;br&gt;watchdog / supervisor" vertex="1">
-          <mxGeometry height="75" width="180" x="1530" y="835" as="geometry" />
+          <mxGeometry height="75" width="180" x="1530" y="855" as="geometry" />
         </mxCell>
         <mxCell id="legend_power_line" edge="1" parent="1" style="endArrow=block;html=1;rounded=0;strokeWidth=3;strokeColor=#d00000;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="85" y="785" as="sourcePoint" />
-            <mxPoint x="155" y="785" as="targetPoint" />
+            <mxPoint x="85" y="805" as="sourcePoint" />
+            <mxPoint x="155" y="805" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="legend_power_text" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=13;" value="电源线" vertex="1">
-          <mxGeometry height="30" width="110" x="170" y="770" as="geometry" />
+          <mxGeometry height="30" width="110" x="170" y="790" as="geometry" />
         </mxCell>
         <mxCell id="legend_signal_line" edge="1" parent="1" style="endArrow=block;html=1;rounded=0;strokeWidth=2;strokeColor=#0066cc;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="85" y="835" as="sourcePoint" />
-            <mxPoint x="155" y="835" as="targetPoint" />
+            <mxPoint x="85" y="855" as="sourcePoint" />
+            <mxPoint x="155" y="855" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="legend_signal_text" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=13;" value="控制 / 信号线" vertex="1">
-          <mxGeometry height="30" width="130" x="170" y="820" as="geometry" />
+          <mxGeometry height="30" width="130" x="170" y="840" as="geometry" />
         </mxCell>
         <mxCell id="p_solar_to_input" edge="1" parent="1" source="solar" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="input_protection" value="太阳能输入功率">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" x="-0.0909" y="13" as="geometry">
+            <mxPoint y="1" as="offset" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="p_input_to_charger" edge="1" parent="1" source="input_protection" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="mppt_powerpath" value="受保护输入">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="p_input_to_solar_bus_reg" edge="1" parent="1" source="input_protection" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="solar_bus_reg" value="日照区供电路径">
+          <mxGeometry relative="1" x="0.0348" y="13" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="550" y="212" />
+              <mxPoint x="550" y="212" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="p_charger_to_bus" edge="1" parent="1" source="mppt_powerpath" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="system_bus" value="SYS 输出：日照区供系统母线">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="p_input_to_charger" edge="1" parent="1" source="input_protection" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="solar_charger" value="充电输入">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="400" y="308" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p_solar_bus_reg_to_oring" edge="1" parent="1" source="solar_bus_reg" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="oring" value="太阳能侧供 SYS">
+          <mxGeometry relative="1" x="0.0667" y="18" as="geometry">
+            <mxPoint y="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p_oring_to_bus" edge="1" parent="1" source="oring" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="system_bus" value="OR-ing 输出">
+          <mxGeometry relative="1" x="-0.0063" y="-8" as="geometry">
+            <mxPoint x="8" y="-7" as="offset" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="p_bus_to_load" edge="1" parent="1" source="system_bus" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="load" value="负载供电">
           <mxGeometry relative="1" as="geometry" />
@@ -103,66 +131,75 @@
         <mxCell id="p_bus_to_reg" edge="1" parent="1" source="system_bus" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="regulator" value="系统母线供电">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1055" y="120" />
-              <mxPoint x="1600" y="120" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="p_charger_to_protection" edge="1" parent="1" source="mppt_powerpath" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;startArrow=block;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="protection" value="BAT 端口：日照充电 / 地影放电">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="545" y="240" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="p_protection_to_battery" edge="1" parent="1" source="protection" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;startArrow=block;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="battery" value="受保护电池连接">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="p_battery_to_bus_explicit" edge="1" parent="1" source="protection" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;dashed=1;" target="system_bus" value="地影区电池供负载路径：Battery → Protection → SYS → Load">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="580" y="320" />
-              <mxPoint x="1055" y="320" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="p_battery_to_heater" edge="1" parent="1" source="battery" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="heater_resistors" value="加热 / 均衡功率">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="850" y="410" />
-              <mxPoint x="1175" y="410" />
+              <mxPoint x="1245" y="280" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="p_reg_to_esp" edge="1" parent="1" source="regulator" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="esp32" value="3.3V 供电">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1600" y="660" />
-              <mxPoint x="1058" y="660" />
+              <mxPoint x="1530" y="680" />
+              <mxPoint x="1058" y="680" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="p_reg_to_adc" edge="1" parent="1" source="regulator" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="adc" value="3.3V 供电">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1600" y="660" />
-              <mxPoint x="795" y="660" />
+              <mxPoint x="1530" y="680" />
+              <mxPoint x="795" y="680" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p_charger_to_protection" edge="1" parent="1" source="solar_charger" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="protection" value="2S 电池充电路径">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="330" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p_protection_to_battery" edge="1" parent="1" source="protection" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;startArrow=block;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="battery" value="受保护电池连接">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_protection_to_oring" edge="1" parent="1" source="protection" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;dashed=1;" target="oring" value="地影区电池供负载路径">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="545" y="385" />
+              <mxPoint x="810" y="385" />
+              <mxPoint x="810" y="220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p_battery_to_heater" edge="1" parent="1" source="battery" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="heater_resistors" value="加热 / 均衡功率">
+          <mxGeometry relative="1" x="-0.0667" y="12" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1030" y="530" />
+              <mxPoint x="1030" y="530" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="s_battery_to_sensing" edge="1" parent="1" source="battery" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#0066cc;fontSize=11;" target="sensing" value="B+ / BM / B- 电压、电流、温度">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="770" y="660" />
-              <mxPoint x="580" y="660" />
+              <mxPoint x="770" y="680" />
+              <mxPoint x="580" y="680" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="s_charger_to_sensing" edge="1" parent="1" source="mppt_powerpath" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#0066cc;fontSize=11;" target="sensing" value="PV 电压 / 输入电流 / 充电器状态">
+        <mxCell id="s_pv_to_sensing" edge="1" parent="1" source="input_protection" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#0066cc;fontSize=11;" target="sensing" value="PV 电压 / 输入电流">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="670" y="645" />
-              <mxPoint x="515" y="645" />
+              <mxPoint x="380" y="700" />
+              <mxPoint x="500" y="700" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s_charger_to_sensing" edge="1" parent="1" source="solar_charger" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#0066cc;fontSize=11;" target="sensing" value="充电器状态">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="675" y="700" />
+              <mxPoint x="515" y="700" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -175,18 +212,20 @@
         <mxCell id="s_esp_to_firmware" edge="1" parent="1" source="esp32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#0066cc;fontSize=11;" target="firmware" value="测量更新 / 控制决策">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="s_firmware_to_charger" edge="1" parent="1" source="firmware" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#0066cc;fontSize=11;" target="mppt_powerpath" value="用于 MPPT 的充电电流指令">
+        <mxCell id="s_firmware_to_charger" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#0066cc;fontSize=11;" value="充电 EN / 两档电流控制">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1430" y="380" />
-              <mxPoint x="690" y="380" />
+              <mxPoint x="1394.96" y="400" />
+              <mxPoint x="704.96" y="400" />
             </Array>
+            <mxPoint x="1395.00347826087" y="755" as="sourcePoint" />
+            <mxPoint x="705.0034782608698" y="355" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="s_firmware_to_heater_driver" edge="1" parent="1" source="firmware" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#0066cc;fontSize=11;" target="heater_driver" value="R1 / R2 PWM 占空比指令">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1355" y="593" />
+              <mxPoint x="1365" y="612" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -196,17 +235,17 @@
         <mxCell id="s_esp_to_remote" edge="1" parent="1" source="esp32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;startArrow=block;endArrow=block;html=1;strokeWidth=2;strokeColor=#0066cc;fontSize=11;" target="remote" value="WiFi 遥测 / 远程指令">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1110" y="980" />
-              <mxPoint x="1510" y="980" />
-              <mxPoint x="1510" y="763" />
+              <mxPoint x="1110" y="1000" />
+              <mxPoint x="1510" y="1000" />
+              <mxPoint x="1510" y="783" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="s_esp_to_debug" edge="1" parent="1" source="esp32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;startArrow=block;endArrow=block;html=1;strokeWidth=2;strokeColor=#0066cc;fontSize=11;" target="debug" value="烧录 / LED / watchdog">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1058" y="1010" />
-              <mxPoint x="1620" y="1010" />
+              <mxPoint x="1058" y="1030" />
+              <mxPoint x="1620" y="1030" />
             </Array>
           </mxGeometry>
         </mxCell>
