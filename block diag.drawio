@@ -142,28 +142,33 @@
         <mxCell id="e_usb_input" edge="1" parent="1" source="usb" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#d00000;fontSize=11;" target="input_prot" value="test power">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_input_charger" edge="1" parent="1" source="input_prot" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#d00000;fontSize=11;" target="charger" value="protected input">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e_input_charger" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#d00000;fontSize=11;" target="charger" value="protected input">
+          <mxGeometry relative="1" x="-0.1429" y="15" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="490" y="185" as="sourcePoint" />
+            <mxPoint x="556" y="185" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="e_charger_battery" edge="1" parent="1" source="charger" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#d00000;fontSize=11;" target="battery" value="charge power">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" x="-0.2" y="-15" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="e_batt_powerpath" edge="1" parent="1" source="battery" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#d00000;fontSize=11;" target="power_path" value="battery power">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" x="-0.5821" y="65" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="830" y="165" />
+              <mxPoint x="830" y="220" />
+              <mxPoint x="645" y="220" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="e_input_powerpath" edge="1" parent="1" source="input_prot" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#d00000;fontSize=11;" target="power_path" value="direct input to load">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="405" y="250" />
               <mxPoint x="645" y="250" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e_powerpath_load" edge="1" parent="1" source="power_path" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#d00000;fontSize=11;" target="load" value="system bus">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1020" y="315" />
-              <mxPoint x="1020" y="165" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -183,7 +188,7 @@
             <Array as="points">
               <mxPoint x="405" y="405" />
               <mxPoint x="1085" y="405" />
-              <mxPoint x="1085" y="285" />
+              <mxPoint x="1085" y="270" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -239,7 +244,7 @@
               <mxPoint x="705" y="705" />
               <mxPoint x="535" y="705" />
               <mxPoint x="535" y="230" />
-              <mxPoint x="645" y="230" />
+              <mxPoint x="620" y="230" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -252,13 +257,14 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="e_mcu_balance" edge="1" parent="1" source="mcu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#800080;fontSize=11;" target="balance" value="balance / heater PWM">
+        <mxCell id="e_mcu_balance" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#800080;fontSize=11;" value="balance / heater PWM">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="705" y="705" />
-              <mxPoint x="950" y="705" />
-              <mxPoint x="950" y="305" />
+              <mxPoint x="720" y="705" />
+              <mxPoint x="965" y="705" />
             </Array>
+            <mxPoint x="720" y="645" as="sourcePoint" />
+            <mxPoint x="965.0344827586207" y="284.9999999999999" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="e_hprot_powerpath" edge="1" parent="1" source="h_prot" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#800080;fontSize=11;" target="power_path" value="emergency cutoff">
@@ -273,7 +279,7 @@
         <mxCell id="e_mcu_ui" edge="1" parent="1" source="mcu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#000000;fontSize=11;" target="local_ui" value="status / commands">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="705" y="720" />
+              <mxPoint x="770" y="720" />
               <mxPoint x="1110" y="720" />
               <mxPoint x="1110" y="285" />
             </Array>
@@ -282,7 +288,7 @@
         <mxCell id="e_mcu_program" edge="1" parent="1" source="mcu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#000000;fontSize=11;" target="program" value="UART / debug">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="705" y="720" />
+              <mxPoint x="770" y="720" />
               <mxPoint x="1110" y="720" />
               <mxPoint x="1110" y="405" />
             </Array>
@@ -300,7 +306,7 @@
         <mxCell id="e_mcu_wireless" edge="1" parent="1" source="mcu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#000000;fontSize=11;" target="wireless" value="telemetry packets">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="705" y="720" />
+              <mxPoint x="770" y="720" />
               <mxPoint x="1110" y="720" />
               <mxPoint x="1110" y="525" />
             </Array>
@@ -317,19 +323,29 @@
         <mxCell id="e_mcu_logger" edge="1" parent="1" source="mcu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#000000;fontSize=11;" target="logger" value="log data">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="705" y="720" />
+              <mxPoint x="770" y="720" />
               <mxPoint x="1465" y="720" />
-              <mxPoint x="1465" y="455" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="e_mcu_obc" edge="1" parent="1" source="mcu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#000000;fontSize=11;" target="obc" value="telemetry / commands">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="705" y="720" />
+              <mxPoint x="770" y="720" />
               <mxPoint x="1465" y="720" />
-              <mxPoint x="1465" y="555" />
             </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_powerpath_load" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#d00000;fontSize=11;" value="system bus">
+          <mxGeometry relative="1" x="0.034" y="10" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="733" y="310" />
+              <mxPoint x="1060" y="310" />
+              <mxPoint x="1060" y="165" />
+            </Array>
+            <mxPoint x="732.4999999999998" y="315" as="sourcePoint" />
+            <mxPoint x="1167.5000000000002" y="165" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
