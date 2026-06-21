@@ -1,23 +1,23 @@
 <mxfile host="app.diagrams.net">
   <diagram name="第 1 页" id="mtsnZ4J5otzk8pghUDI_">
-    <mxGraphModel dx="1155" dy="668" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1050" math="0" shadow="0">
+    <mxGraphModel dx="856" dy="495" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1050" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=24;fontStyle=1" value="CubeSat 2S18650 Battery Management System: Low-Cost Solar Charging, Battery Power Supply, and Heater Balancing Control" vertex="1">
           <mxGeometry height="40" width="1380" x="210" y="25" as="geometry" />
         </mxCell>
-        <mxCell id="box_power" parent="1" style="rounded=1;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;arcSize=8;fontSize=17;fontStyle=1;verticalAlign=top;spacingTop=8;fillColor=#f8cecc;strokeColor=#b85450;" value="Sunlight / Eclipse Power Path: Low-Cost OR-ing Structure" vertex="1">
+        <mxCell id="box_power" parent="1" style="rounded=1;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;arcSize=8;fontSize=17;fontStyle=1;verticalAlign=top;spacingTop=8;fillColor=#f8cecc;strokeColor=#b85450;" value="Sunlight / Eclipse Power Path and OR-ing Structure" vertex="1">
           <mxGeometry height="280" width="1710" x="40" y="90" as="geometry" />
         </mxCell>
-        <mxCell id="oring" parent="box_power" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="Low-Cost Power OR-ing&lt;br&gt;Schottky diode / P-MOS ideal diode&lt;br&gt;combines solar-side and battery-side paths&lt;br&gt;prevents reverse current" vertex="1">
+        <mxCell id="oring" parent="box_power" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="OR-ing Diode&lt;br&gt;combines solar-side and battery-side paths, prevents reverse current" vertex="1">
           <mxGeometry height="95" width="220" x="840" y="62.5" as="geometry" />
         </mxCell>
         <mxCell id="system_bus" parent="box_power" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="System Bus SYS&lt;br&gt;Sunlight: powered by solar side&lt;br&gt;Eclipse: powered by battery side&lt;br&gt;all loads draw power from here" vertex="1">
           <mxGeometry height="90" width="210" x="1130" y="62.5" as="geometry" />
         </mxCell>
         <mxCell id="p_oring_to_bus" edge="1" parent="box_power" source="oring" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="system_bus" value="OR-ing output">
-          <mxGeometry relative="1" x="0.1429" y="10" as="geometry">
+          <mxGeometry relative="1" x="-0.1429" y="10" as="geometry">
             <mxPoint as="offset" />
             <Array as="points">
               <mxPoint x="1110" y="110" />
@@ -34,19 +34,19 @@
         <mxCell id="legend" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=16;fontStyle=1;verticalAlign=top;spacingTop=8;" value="Legend" vertex="1">
           <mxGeometry height="140" width="240" x="60" y="760" as="geometry" />
         </mxCell>
-        <mxCell id="solar" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;" value="Solar Panel / Demo PV Input&lt;br&gt;9–12V variable-voltage input&lt;br&gt;current-limited external source" vertex="1">
+        <mxCell id="solar" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;" value="Solar Panel / Demo PV Input&lt;br&gt;9–12V variable-voltage input" vertex="1">
           <mxGeometry height="75" width="170" x="85" y="175" as="geometry" />
         </mxCell>
         <mxCell id="input_protection" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;" value="Input Protection&lt;br&gt;PTC resettable fuse + TVS&lt;br&gt;reverse-polarity protection" vertex="1">
           <mxGeometry height="75" width="180" x="310" y="175" as="geometry" />
         </mxCell>
-        <mxCell id="solar_bus_reg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="Solar-Side DC/DC Regulation Stage&lt;br&gt;establishes SYS bus in sunlight&lt;br&gt;low-cost Buck / Buck-Boost option&lt;br&gt;prioritizes Load power" vertex="1">
+        <mxCell id="solar_bus_reg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="Solar-Side DC/DC Regulator(&amp;gt;8.4V)" vertex="1">
           <mxGeometry height="95" width="210" x="560" y="150" as="geometry" />
         </mxCell>
-        <mxCell id="solar_charger" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="Low-Cost 2S Solar Charger&lt;br&gt;CN3791 module / BQ24650 option&lt;br&gt;2S Li-ion CC/CV charging&lt;br&gt;EN or two-level current control for simplified MPPT" vertex="1">
+        <mxCell id="solar_charger" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="Charger IC&lt;br&gt;LT3652EMSE#PBF（for MPPT）&lt;br&gt;or BQ2057WSN" vertex="1">
           <mxGeometry height="95" width="230" x="560" y="260" as="geometry" />
         </mxCell>
-        <mxCell id="load" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;" value="CubeSat Load Output&lt;br&gt;EPS / Payload / Demo Load" vertex="1">
+        <mxCell id="load" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;" value="CubeSat Load Output" vertex="1">
           <mxGeometry height="75" width="180" x="1440" y="160" as="geometry" />
         </mxCell>
         <mxCell id="regulator" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;" value="3.3V Buck Regulator&lt;br&gt;powers ESP32, ADC, and sensors" vertex="1">
@@ -55,10 +55,10 @@
         <mxCell id="mode_note" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;align=left;spacing=8;" value="Operating Mode Description:&lt;br&gt;Sunlight: PV → DC/DC → OR-ing → SYS → Load, while PV → 2S Charger → Battery charging&lt;br&gt;Eclipse: Battery → Protection Board / Protection IC → OR-ing → SYS → Load" vertex="1">
           <mxGeometry height="65" width="610" x="820" y="285" as="geometry" />
         </mxCell>
-        <mxCell id="protection" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="2S Battery Protection Board / Protection IC&lt;br&gt;overvoltage / undervoltage / overcurrent / short-circuit / overtemperature&lt;br&gt;CHG / DSG MOSFETs&lt;br&gt;independent safety protection layer" vertex="1">
+        <mxCell id="protection" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="2S Battery Protection IC&lt;br&gt;&lt;div&gt;S-8252AAO-M6T1U&lt;/div&gt;" vertex="1">
           <mxGeometry height="95" width="230" x="430" y="490" as="geometry" />
         </mxCell>
-        <mxCell id="battery" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" value="2S18650 Battery Pack&lt;br&gt;B+ / BM / B- taps&lt;br&gt;Cell 2: B+ to BM&lt;br&gt;Cell 1: BM to B-" vertex="1">
+        <mxCell id="battery" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" value="2S18650 Battery Pack&lt;div&gt;Holder:1044&lt;br&gt;Cell 2: B+ to BM&lt;br&gt;Cell 1: BM to B-&lt;/div&gt;" vertex="1">
           <mxGeometry height="105" width="230" x="735" y="485" as="geometry" />
         </mxCell>
         <mxCell id="heater_resistors" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;" value="Dual Balancing / Heater Resistors&lt;br&gt;R2 across Cell 2: B+ ↔ BM&lt;br&gt;R1 across Cell 1: BM ↔ B-&lt;br&gt;primary function: heating&lt;br&gt;secondary function: balancing" vertex="1">
@@ -70,16 +70,16 @@
         <mxCell id="sensing" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;" value="Sensing Front-End&lt;br&gt;PV voltage / input current&lt;br&gt;B+ and BM voltage dividers&lt;br&gt;battery current shunt + amplifier&lt;br&gt;cell / heater-area temperature sensors&lt;br&gt;RC filtering + ADC input protection" vertex="1">
           <mxGeometry height="125" width="240" x="395" y="760" as="geometry" />
         </mxCell>
-        <mxCell id="adc" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;" value="External ADC&lt;br&gt;candidate: ADS1115&lt;br&gt;16-bit I2C ADC&lt;br&gt;for critical measurements" vertex="1">
+        <mxCell id="adc" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;" value="External ADC&lt;br&gt;MCP3428-E/SL&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;INA219BIDR&lt;/span&gt;" vertex="1">
           <mxGeometry height="85" width="180" x="705" y="780" as="geometry" />
         </mxCell>
-        <mxCell id="esp32" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;" value="ESP32-WROOM&lt;br&gt;MCU + WiFi&lt;br&gt;I2C / PWM / GPIO / UART&lt;br&gt;telemetry + remote control" vertex="1">
+        <mxCell id="esp32" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;" value="ESP32-WROOM&lt;br&gt;(ESP32-WROOM-32E-N4)&lt;br&gt;MCU + WiFi&lt;br&gt;telemetry + remote control" vertex="1">
           <mxGeometry height="105" width="205" x="955" y="770" as="geometry" />
         </mxCell>
-        <mxCell id="firmware" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;" value="BMS / Simplified MPPT Firmware Logic&lt;br&gt;Sunlight: solar powers load + charges battery&lt;br&gt;reduce / disable charging when PV voltage is too low&lt;br&gt;Eclipse: battery powers load&lt;br&gt;adjust heater duty cycle for balancing based on cell status" vertex="1">
+        <mxCell id="firmware" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;" value="BMS Logic&lt;br&gt;Sunlight: solar powers load + charges battery&lt;br&gt;reduce / disable charging when PV voltage is too low&lt;br&gt;Eclipse: battery powers load&lt;br&gt;adjust heater duty cycle for balancing based on cell status" vertex="1">
           <mxGeometry height="130" width="270" x="1230" y="755" as="geometry" />
         </mxCell>
-        <mxCell id="remote" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" value="Remote Dashboard / PC / Phone&lt;br&gt;WiFi telemetry&lt;br&gt;remote heater command" vertex="1">
+        <mxCell id="remote" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" value="Remote Dashboard&lt;br&gt;WiFi telemetry&lt;br&gt;remote command" vertex="1">
           <mxGeometry height="75" width="180" x="1530" y="745" as="geometry" />
         </mxCell>
         <mxCell id="debug" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;" value="Debug / Reliability Module&lt;br&gt;programming/debug header&lt;br&gt;status LEDs&lt;br&gt;watchdog / supervisor" vertex="1">
@@ -103,12 +103,12 @@
         <mxCell id="legend_signal_text" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=13;" value="Control / signal line" vertex="1">
           <mxGeometry height="30" width="130" x="170" y="840" as="geometry" />
         </mxCell>
-        <mxCell id="p_solar_to_input" edge="1" parent="1" source="solar" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="input_protection" value="solar input power">
+        <mxCell id="p_solar_to_input" edge="1" parent="1" source="solar" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="input_protection" value="solar input">
           <mxGeometry relative="1" x="-0.0909" y="13" as="geometry">
             <mxPoint y="1" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="p_input_to_solar_bus_reg" edge="1" parent="1" source="input_protection" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="solar_bus_reg" value="sunlight power path">
+        <mxCell id="p_input_to_solar_bus_reg" edge="1" parent="1" source="input_protection" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;" target="solar_bus_reg" value="power path">
           <mxGeometry relative="1" x="0.0348" y="13" as="geometry">
             <mxPoint as="offset" />
             <Array as="points">
@@ -227,7 +227,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="s_esp_to_firmware" edge="1" parent="1" source="esp32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#0066cc;fontSize=11;" target="firmware" value="measurement update / control decision">
-          <mxGeometry relative="1" x="0.036" y="10" as="geometry">
+          <mxGeometry relative="1" x="-0.1429" y="-8" as="geometry">
             <mxPoint as="offset" />
             <Array as="points">
               <mxPoint x="1210" y="822" />
