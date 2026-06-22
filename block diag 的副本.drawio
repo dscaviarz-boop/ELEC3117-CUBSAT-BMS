@@ -52,7 +52,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="box_battery" parent="1" style="rounded=1;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;arcSize=8;fontSize=17;fontStyle=1;verticalAlign=top;spacingTop=8;fillColor=#d5e8d4;strokeColor=#82b366;" value="2S18650 Battery Pack, Hardware Protection, Heater / Balancing" vertex="1">
-          <mxGeometry height="250" width="1050" x="350" y="410" as="geometry" />
+          <mxGeometry height="250" width="1050" x="350" y="420" as="geometry" />
         </mxCell>
         <mxCell id="box_control" parent="1" style="rounded=1;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;arcSize=8;fontSize=17;fontStyle=1;verticalAlign=top;spacingTop=8;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Measurement, Simplified MPPT Control, Telemetry, and Debug" vertex="1">
           <mxGeometry height="250" width="1050" x="350" y="700" as="geometry" />
@@ -192,7 +192,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="p_protection_to_oring" edge="1" parent="1" source="protection" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=3;strokeColor=#d00000;fontSize=11;dashed=1;" target="oring" value="eclipse battery-to-load path">
-          <mxGeometry relative="1" x="0.1579" y="15" as="geometry">
+          <mxGeometry relative="1" x="0.157" y="5" as="geometry">
             <mxPoint as="offset" />
             <Array as="points">
               <mxPoint x="545" y="385" />
@@ -253,8 +253,8 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="s_firmware_to_charger" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#0066cc;fontSize=11;" value="charger EN / two-level current control">
-          <mxGeometry relative="1" x="-0.009" y="-10" as="geometry">
+        <mxCell id="s_firmware_to_charger" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#0066cc;fontSize=11;" value="charger EN control">
+          <mxGeometry relative="1" x="-0.0092" y="-10" as="geometry">
             <mxPoint as="offset" />
             <Array as="points">
               <mxPoint x="1394.96" y="400" />
@@ -303,6 +303,20 @@
             </Array>
             <mxPoint x="1440" y="733" as="sourcePoint" />
             <mxPoint x="1660" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vB4gOoja8xux1XnVtfFI-6" edge="1" parent="1" source="firmware" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;endArrow=block;html=1;strokeWidth=2;strokeColor=#0066cc;fontSize=11;exitX=0.71;exitY=0.028;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.989;entryY=0.821;entryDx=0;entryDy=0;entryPerimeter=0;" target="solar_bus_reg" value="charger EN control">
+          <mxGeometry relative="1" x="-0.0092" y="-10" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1422" y="710" />
+              <mxPoint x="1420" y="710" />
+              <mxPoint x="1420" y="370" />
+              <mxPoint x="800" y="370" />
+              <mxPoint x="800" y="228" />
+            </Array>
+            <mxPoint x="1450.04347826087" y="710" as="sourcePoint" />
+            <mxPoint x="760.0434782608697" y="310" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
