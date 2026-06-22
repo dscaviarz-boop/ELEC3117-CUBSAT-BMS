@@ -66,7 +66,7 @@
         <mxCell id="input_protection" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;" value="Input Protection&lt;br&gt;PTC resettable fuse + TVS&lt;br&gt;reverse-polarity protection" vertex="1">
           <mxGeometry height="75" width="180" x="310" y="175" as="geometry" />
         </mxCell>
-        <mxCell id="solar_bus_reg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="Solar-Side DC/DC Regulator(&amp;gt;8.4V)" vertex="1">
+        <mxCell id="solar_bus_reg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="Solar-Side soft start DC/DC Regulator(&amp;gt;8.4V)" vertex="1">
           <mxGeometry height="95" width="210" x="560" y="150" as="geometry" />
         </mxCell>
         <mxCell id="solar_charger" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" value="Charger IC&lt;br&gt;LT3652EMSE#PBF（for MPPT）&lt;br&gt;or BQ2057WSN" vertex="1">
@@ -309,8 +309,7 @@
           <mxGeometry relative="1" x="-0.0092" y="-10" as="geometry">
             <mxPoint as="offset" />
             <Array as="points">
-              <mxPoint x="1422" y="710" />
-              <mxPoint x="1420" y="710" />
+              <mxPoint x="1420" y="759" />
               <mxPoint x="1420" y="370" />
               <mxPoint x="800" y="370" />
               <mxPoint x="800" y="228" />
