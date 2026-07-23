@@ -1,13 +1,20 @@
 #include <Arduino.h>
 
+const int PIN_STATUS_LED = 18;  // ESP32 physical pin 30 = GPIO18
+
 void setup()
 {
+  // 点亮状态 LED
+  pinMode(PIN_STATUS_LED, OUTPUT);
+  digitalWrite(PIN_STATUS_LED, HIGH);
+
   Serial.begin(115200);
   delay(500);
 
   Serial.println();
   Serial.println("================================");
   Serial.println("ESP32 MCU board boot successful");
+  Serial.println("Status LED ON");
   Serial.println("================================");
 
   Serial.printf("Chip model: %s\n", ESP.getChipModel());
