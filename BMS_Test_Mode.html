@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ELEC3117 BMS 控制逻辑测试模式</title>
+  <style>
+    /* Same design tokens as the ESP32 CONTROL_PAGE in BMS_ver1.0.ino. */
+    :root { color-scheme: dark; --bg:#0b1020; --card:#151d31; --line:#2a3856; --muted:#a9b5cc; --ok:#3fd18c; --warn:#f0b44c; --bad:#ff6673; --text:#edf3ff; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:linear-gradient(145deg,#08101e,#121a2e); color:var(--text); font:14px system-ui; }
+    button,input,select { font: inherit; }
+    button { padding:10px; border-radius:9px; border:1px solid #43577d; background:#223250; color:white; cursor:pointer; }
+    button:hover { border-color:#738cb9; }
+    button.primary { background:#174d39; border-color:#2aa875; }
+    button.warn { background:#6e4918; }
+    button.danger { background:#762936; }
+    button.ghost { background: transparent; }
+    input,select { width:100%; padding:8px; margin-top:4px; background:#0d1527; color:white; border:1px solid var(--line); border-radius:7px; }
+    input:focus,select:focus { outline:2px solid #43577d; }
+    label { display:block; color:var(--muted); }
+    .app { max-width:1100px; margin:auto; padding:16px; }
+    header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+    .eyebrow { display:inline-block; color:#101522; background:var(--warn); border-radius:999px; padding:3px 8px; font-weight:700; font-size:.72rem; }
+    h1 { font-size:1.45rem; margin:0; }
+    h2 { font-size:1rem; margin:0 0 10px; }
+    h3 { margin: 0 0 8px; font-size: 13px; }
+    p { margin: 0; }
+    .muted { color: var(--muted); }
+    .source { text-align: right; color: var(--muted); font-size: 12px; }
+    .statusbar { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; }
+    .metric,.panel { background:var(--card); border:1px solid var(--line); border-radius:13px; }
+    .metric { padding:13px; margin-bottom:10px; }
+    .metric span { display:block; color:var(--muted); font-size:.82rem; }
+    .metric b { display:block; margin-top:2px; font-size:1.45rem; font-weight:700; }
+    .layout { display:grid; grid-template-columns:1fr; gap:0; }
+    .panel { padding:13px; margin-bottom:10px; }
+    .fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; }
+    .field-wide { grid-column: 1/-1; }
+    .check { display: flex; align-items: center; gap: 7px; min-height: 38px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; color: var(--text); }
+    .check input { width: auto; }
+    .preset-grid,.button-row { display: flex; flex-wrap: wrap; gap: 7px; }
+    .divider { height: 1px; background: var(--line); margin: 13px 0; }
+    .outputs { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 8px; }
+    .output { border:1px solid var(--line); border-radius:9px; padding:8px; text-align:center; min-height:82px; }
+    .output .name { color: var(--muted); font-size: 11px; }
+    .output strong { display: block; margin: 5px 0 2px; font-size: 18px; }
+    .output.on { background:#174d39; border-color:#2aa875; }
+    .output.blocked { background:#6e4918; border-color:#8d622d; }
+    .pill { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; padding: 3px 8px; color: var(--muted); font-size: 11px; }
+    .pill.ok { color:var(--ok); border-color:#2aa875; }
+    .pill.warn { color:var(--warn); border-color:#8d622d; }
+    .pill.bad { color:var(--bad); border-color:#9b3d49; }
+    .explain { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; margin-top: 10px; }
+    .reason { padding:9px 10px; border-left:3px solid #43577d; background:#0d1527; border-radius:7px; }
+    .reason b { display: block; font-size: 12px; }
+    .reason span { color: var(--muted); font-size: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th,td { padding: 8px 7px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; }
+    code { font: 12px ui-monospace,SFMono-Regular,Consolas,monospace; color: #b9ddff; }
+    .table-wrap { overflow: auto; max-height: 330px; }
+    .empty { padding: 18px; text-align: center; color: var(--muted); }
+    .severity-Critical { color:var(--bad); } .severity-Recoverable,.severity-Warning { color:var(--warn); }
+    details { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 10px; }
+    summary { cursor: pointer; color: var(--muted); }
+    .compare-result { margin-top: 9px; min-height: 34px; border-radius: 8px; padding: 8px 10px; background: #08131d; color: var(--muted); }
+    .compare-result.pass { color:var(--ok); border:1px solid #2aa875; }
+    .compare-result.fail { color:var(--bad); border:1px solid #9b3d49; }
+    .log { max-height:230px; overflow:auto; font:12px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace; background:#080d18; padding:10px; border-radius:8px; color:#cbd7ee; white-space:pre-wrap; }
+    .note { border:1px solid #8d622d; background:#3c2a14; color:#f3d49d; padding:10px 12px; border-radius:9px; margin-bottom:10px; font-size:.82rem; }
+    @media(max-width:980px){ .outputs{grid-template-columns:repeat(3,1fr)}.source{text-align:left}header{align-items:flex-start;flex-direction:column} }
+    @media(max-width:600px){ .app{padding:10px}.fields,.explain{grid-template-columns:1fr}.outputs{grid-template-columns:repeat(2,1fr)}button{flex:1 1 42%}.source{display:none} }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div><h1>ELEC3117 2S BMS Supervisor</h1><p class="muted"><span class="eyebrow">TEST MODE</span> · 手动注入测量值，立即验证状态判断和输出仲裁</p></div>
+    <div class="source">逻辑基线：<code>BMS_ver1.0.ino</code><br>纯状态测试，不会连接或控制真实电池</div>
+  </header>
+  <div class="note"><b>使用方法：</b>选择场景或填写测量数据后，页面立即按照当前输入、控制请求和系统状态计算结果，不需要推进时间。Critical 故障仍会锁存，直到故障条件消失并手动清除。</div>
+
+  <section class="statusbar">
+    <div class="metric"><span>判断模式</span><b id="simTime">STATE</b></div>
+    <div class="metric"><span>System state</span><b id="systemState">NORMAL</b></div>
+    <div class="metric"><span>Pack / SOC</span><b id="packState">7.80 V · 65%</b></div>
+    <div class="metric"><span>温差 / 压差</span><b id="diffState">0.0°C · 0.000V</b></div>
+    <div class="metric"><span>总限制动作</span><b id="actionState">NONE</b></div>
+  </section>
+
+  <div class="layout">
+    <aside>
+      <section class="panel">
+        <h2>1 · 注入测量数据</h2>
+        <div class="fields">
+          <label>B1 电压 (V)<input id="b1" type="number" min="0" max="6" step="0.01" value="3.90"></label>
+          <label>B2 电压 (V)<input id="b2" type="number" min="0" max="6" step="0.01" value="3.90"></label>
+          <label>NTC1 温度 (°C)<input id="t1" type="number" min="-60" max="120" step="0.5" value="20"></label>
+          <label>NTC2 温度 (°C)<input id="t2" type="number" min="-60" max="120" step="0.5" value="20"></label>
+          <label>输入电压 (V)<input id="vin" type="number" min="0" max="20" step="0.1" value="10.5"></label>
+          <label>输入电流 (mA)<input id="iin" type="number" min="-5000" max="5000" step="10" value="300"></label>
+          <label>NTC1 状态<select id="ntc1Mode"><option value="normal">正常</option><option value="open">开路</option><option value="short">短路</option><option value="range">温度超范围</option><option value="stale">通道过期/无数据</option></select></label>
+          <label>NTC2 状态<select id="ntc2Mode"><option value="normal">正常</option><option value="open">开路</option><option value="short">短路</option><option value="range">温度超范围</option><option value="stale">通道过期/无数据</option></select></label>
+          <label>CH1 状态<select id="ch1Mode"><option value="normal">正常</option><option value="stale">过期/无数据</option></select></label>
+          <label>CH2 状态<select id="ch2Mode"><option value="normal">正常</option><option value="stale">过期/无数据</option></select></label>
+          <label class="check"><input id="mcpFound" type="checkbox" checked>MCP3424 已连接</label>
+          <label class="check"><input id="inaValid" type="checkbox" checked>INA219 数据有效</label>
+        </div>
+        <div class="divider"></div>
+        <h3>快速场景</h3>
+        <div class="preset-grid">
+          <button data-preset="normal">正常</button><button data-preset="cold">低温</button><button data-preset="uv">B1 欠压</button>
+          <button data-preset="ov">B1 过压</button><button data-preset="imbalance">压差过大</button><button data-preset="hot">高温</button>
+          <button data-preset="ntc">NTC1 开路</button><button data-preset="weak">输入塌陷</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>2 · 控制请求</h2>
+        <div class="button-row">
+          <button class="primary" id="autoBtn">开启 AUTO</button><button id="loadBtn">切换 LOAD 请求</button>
+          <button id="solarBtn">切换 Solar 请求</button><button id="h1Btn">切换 H1 请求</button>
+          <button id="h2Btn">切换 H2 请求</button><button id="bothBtn">切换双 Heater 请求</button>
+          <button class="danger" id="safeBtn">进入 SAFE MODE</button><button id="exitSafeBtn">退出 SAFE</button>
+          <button class="warn" id="clearBtn">清除已消失锁存故障</button>
+        </div>
+        <div class="divider"></div>
+        <div class="button-row"><button class="ghost" id="resetBtn">复位所有状态</button></div>
+      </section>
+
+      <section class="panel">
+        <h2>可编辑设置（与原网页范围一致）</h2>
+        <div class="fields">
+          <label>加热开始 °C<input id="heatStart" type="number" step="0.5" value="5"></label>
+          <label>加热停止 °C<input id="heatStop" type="number" step="0.5" value="10"></label>
+          <label>MPPT Vref<input id="vref" type="number" step="0.1" value="10"></label>
+          <label>均衡开始 ΔV<input id="balStart" type="number" step="0.005" value="0.05"></label>
+          <label>均衡停止 ΔV<input id="balStop" type="number" step="0.005" value="0.02"></label>
+          <label>均衡模式<select id="balMode"><option value="0">关闭</option><option value="1">仅加热时</option><option value="2">仅独立均衡</option><option value="3" selected>两种都启用</option></select></label>
+        </div>
+      </section>
+    </aside>
+
+    <main>
+      <section class="panel">
+        <h2>3 · 计算后的最终输出</h2>
+        <div class="outputs">
+          <div class="output" id="outSolar"><div class="name">SOLAR_EN</div><strong>OFF</strong><span class="pill">OFF</span></div>
+          <div class="output" id="outLoad"><div class="name">LOAD_EN</div><strong>OFF</strong><span class="pill">无请求</span></div>
+          <div class="output" id="outH1"><div class="name">HEATER 1 / R26</div><strong>OFF</strong><span class="pill">0% duty</span></div>
+          <div class="output" id="outH2"><div class="name">HEATER 2 / R32</div><strong>OFF</strong><span class="pill">0% duty</span></div>
+          <div class="output" id="outBalance"><div class="name">BALANCE TARGET</div><strong>OFF</strong><span class="pill">无目标</span></div>
+        </div>
+        <div class="explain" id="explain"></div>
+      </section>
+
+      <section class="panel">
+        <h2>4 · 当前故障与自动响应</h2>
+        <div class="table-wrap"><table><thead><tr><th>状态</th><th>代码 / 等级</th><th>测量证据</th><th>自动动作</th></tr></thead><tbody id="faultRows"></tbody></table></div>
+      </section>
+
+      <section class="panel">
+        <h2>5 · 与你的预期结果比较</h2>
+        <div class="fields">
+          <label>预期 Solar<select id="expectSolar"><option value="skip">不比较</option><option value="on">ON</option><option value="off">OFF</option></select></label>
+          <label>预期 Load<select id="expectLoad"><option value="skip">不比较</option><option value="on">ON</option><option value="off">OFF</option></select></label>
+          <label>预期 H1 请求<select id="expectH1"><option value="skip">不比较</option><option value="on">Duty &gt; 0</option><option value="off">Duty = 0</option></select></label>
+          <label>预期 H2 请求<select id="expectH2"><option value="skip">不比较</option><option value="on">Duty &gt; 0</option><option value="off">Duty = 0</option></select></label>
+          <label>预期均衡<select id="expectBalance"><option value="skip">不比较</option><option value="on">有均衡目标</option><option value="off">无均衡目标</option></select></label>
+        </div>
+        <div class="button-row" style="margin-top:10px"><button class="primary" id="compareBtn">比较当前结果</button><button id="snapshotBtn">保存测试快照</button><button id="exportBtn">导出快照 CSV</button><button id="suiteBtn">运行内置自检</button></div>
+        <div class="compare-result" id="compareResult">尚未比较。</div>
+      </section>
+
+      <section class="panel">
+        <h2>事件记录</h2><div class="log" id="eventLog">[0.0s] 模拟器已复位；所有功率输出关闭，AUTO 关闭。</div>
+        <details><summary>模型边界与测试说明</summary><p class="muted" style="margin-top:8px">本页基于原固件的阈值、故障动作、AUTO/SAFE 状态、加热、均衡和最终输出仲裁，不运行 ESP32、I²C 驱动或 GPIO。为便于演示，所有条件均按当前输入立即判断，不模拟确认延时、定时探测、PWM 瞬时波形、加热轮次或冷却计时。Critical 故障锁存和控制请求状态仍被保留。</p></details>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+/* SIM_ENGINE_START */
+const C={CELL_UV:3.00,CELL_CUV:2.70,CELL_OV:4.25,CELL_COV:4.35,CELL_MIN:2.30,CELL_MAX:4.50,HEAT_CELL_MIN:3.45,BAL_CELL_MIN:3.80,TEMP_REDUCE:15,TEMP_STOP:45,TEMP_CRIT:60,TEMP_DIFF_WARN:8,TEMP_DIFF_FAULT:15,CELL_DIFF_WARN:.100,CELL_DIFF_FAULT:.200,HEAT_ROUND:30000,COOLDOWN:10000,PWM:1000};
+const A={NONE:0,SOLAR:1,LOAD:2,HEAT:4,BAL:8,ALL:15};
+const faultDefs={
+ MCP3424_NOT_FOUND:['Critical',1500,A.ALL],INA219_COMMUNICATION_FAULT:['Recoverable',1500,A.SOLAR],CELL1_ADC_FAULT:['Critical',1000,A.ALL],CELL2_ADC_FAULT:['Critical',1000,A.ALL],
+ NTC1_ADC_FAULT:['Recoverable',1000,A.HEAT|A.BAL],NTC2_ADC_FAULT:['Recoverable',1000,A.HEAT|A.BAL],NTC1_OPEN:['Recoverable',800,A.HEAT|A.BAL],NTC1_SHORT:['Recoverable',800,A.HEAT|A.BAL],NTC1_OUT_OF_RANGE:['Recoverable',1000,A.HEAT|A.BAL],NTC2_OPEN:['Recoverable',800,A.HEAT|A.BAL],NTC2_SHORT:['Recoverable',800,A.HEAT|A.BAL],NTC2_OUT_OF_RANGE:['Recoverable',1000,A.HEAT|A.BAL],
+ TEMP_B1_HIGH:['Recoverable',1000,A.SOLAR|A.HEAT|A.BAL],TEMP_B2_HIGH:['Recoverable',1000,A.SOLAR|A.HEAT|A.BAL],TEMP_B1_CRITICAL:['Critical',500,A.ALL],TEMP_B2_CRITICAL:['Critical',500,A.ALL],TEMP_DIFFERENCE_WARNING:['Warning',3000,A.NONE],TEMP_DIFFERENCE_FAULT:['Recoverable',10000,A.HEAT|A.BAL],
+ CELL1_UNDERVOLTAGE:['Recoverable',1500,A.LOAD|A.HEAT|A.BAL],CELL2_UNDERVOLTAGE:['Recoverable',1500,A.LOAD|A.HEAT|A.BAL],CELL1_CRITICAL_UNDERVOLTAGE:['Critical',500,A.LOAD|A.HEAT|A.BAL],CELL2_CRITICAL_UNDERVOLTAGE:['Critical',500,A.LOAD|A.HEAT|A.BAL],CELL1_OVERVOLTAGE:['Recoverable',1000,A.SOLAR],CELL2_OVERVOLTAGE:['Recoverable',1000,A.SOLAR],CELL1_CRITICAL_OVERVOLTAGE:['Critical',500,A.SOLAR],CELL2_CRITICAL_OVERVOLTAGE:['Critical',500,A.SOLAR],CELL_IMBALANCE_WARNING:['Warning',3000,A.NONE],CELL_IMBALANCE_FAULT:['Recoverable',3000,A.LOAD|A.HEAT],
+ INPUT_COLLAPSE:['Recoverable',0,A.SOLAR],HEATER1_NOT_EFFECTIVE:['Warning',0,A.HEAT],HEATER2_NOT_EFFECTIVE:['Warning',0,A.HEAT],HEATERS_NOT_EFFECTIVE:['Warning',0,A.HEAT],HEATER_STUCK_ON_SUSPECTED:['Critical',0,A.ALL],WATCHDOG_RESET:['Warning',0,A.NONE]
+};
+const actionText=m=>m===0?'Warning only':m===15?'ALL OFF':m===1?'SOLAR OFF':m===(A.HEAT|A.BAL)?'HEAT + BALANCE OFF':m===(A.LOAD|A.HEAT|A.BAL)?'LOAD + HEAT + BALANCE OFF':m===(A.SOLAR|A.HEAT|A.BAL)?'SOLAR + HEAT + BALANCE OFF':m===(A.LOAD|A.HEAT)?'LOAD + NORMAL HEAT OFF':m===A.HEAT?'NORMAL HEAT OFF':'RELATED FUNCTIONS RESTRICTED';
+function makeState(){return {now:0,system:'NORMAL',solar:'OFF',manualSolar:false,inputCollapse:false,auto:false,safe:false,loadRequest:false,heatDemand:false,noSolarHeat:false,balanceTarget:0,manualH1:false,manualH2:false,reqH1:0,reqH2:0,reqB1:0,reqB2:0,duty1:0,duty2:0,outSolar:false,outLoad:false,outH1:false,outH2:false,h1Bad:false,h2Bad:false,bothBad:false,stuck:false,watchdog:false,faults:{},events:[]};}
+function voltageToSoc(v){const vs=[3,3.3,3.5,3.6,3.7,3.8,3.9,4,4.1,4.2],ss=[0,2,8,15,30,50,65,80,90,100];if(!Number.isFinite(v))return NaN;if(v<=3)return 0;if(v>=4.2)return 100;for(let i=0;i<9;i++)if(v<=vs[i+1])return ss[i]+(v-vs[i])/(vs[i+1]-vs[i])*(ss[i+1]-ss[i]);return NaN;}
+function tempToNtcV(t){const r=10000*Math.exp(3492*(1/(t+273.15)-1/298.15));return 3.3*3300/(r+3300);}
+function derive(raw){const cell1Fresh=raw.ch1Mode==='normal',cell2Fresh=raw.ch2Mode==='normal';const cell1Valid=cell1Fresh&&raw.b1>=C.CELL_MIN&&raw.b1<=C.CELL_MAX,cell2Valid=cell2Fresh&&raw.b2>=C.CELL_MIN&&raw.b2<=C.CELL_MAX;function ntc(mode,t){if(mode==='stale')return {fresh:false,v:NaN,valid:false,t:NaN};if(mode==='open')return {fresh:true,v:.01,valid:false,t:NaN};if(mode==='short')return {fresh:true,v:2.02,valid:false,t:NaN};if(mode==='range')return {fresh:true,v:tempToNtcV(-40),valid:false,t:-40};const v=tempToNtcV(t),valid=t>=-30&&t<=80&&v>.02&&v<2;return {fresh:true,v,valid,t:valid?t:NaN};}const n1=ntc(raw.ntc1Mode,raw.t1),n2=ntc(raw.ntc2Mode,raw.t2);const bothT=n1.valid&&n2.valid;const soc1=cell1Valid?voltageToSoc(raw.b1):NaN,soc2=cell2Valid?voltageToSoc(raw.b2):NaN;return {...raw,cell1Fresh,cell2Fresh,cell1Valid,cell2Valid,packV:cell1Valid&&cell2Valid?raw.b1+raw.b2:NaN,cellDiff:cell1Valid&&cell2Valid?Math.abs(raw.b1-raw.b2):NaN,n1,n2,tempMin:bothT?Math.min(n1.t,n2.t):NaN,tempMax:bothT?Math.max(n1.t,n2.t):NaN,tempDiff:bothT?Math.abs(n1.t-n2.t):NaN,soc1,soc2,packSoc:cell1Valid&&cell2Valid?Math.min(soc1,soc2):NaN,inputPower:raw.vin*raw.iin/1000};}
+function faultConditions(s,m){const boot=true;return {
+ MCP3424_NOT_FOUND:[boot&&!m.mcpFound,NaN,NaN],INA219_COMMUNICATION_FAULT:[boot&&!m.inaValid,NaN,NaN],CELL1_ADC_FAULT:[boot&&(!m.cell1Fresh||!m.cell1Valid),m.b1,C.CELL_MIN],CELL2_ADC_FAULT:[boot&&(!m.cell2Fresh||!m.cell2Valid),m.b2,C.CELL_MIN],NTC1_ADC_FAULT:[boot&&!m.n1.fresh,m.n1.v,NaN],NTC2_ADC_FAULT:[boot&&!m.n2.fresh,m.n2.v,NaN],NTC1_OPEN:[m.n1.fresh&&m.n1.v<=.02,m.n1.v,.02],NTC1_SHORT:[m.n1.fresh&&m.n1.v>=2,m.n1.v,2],NTC1_OUT_OF_RANGE:[m.n1.fresh&&m.n1.v>.02&&m.n1.v<2&&!m.n1.valid,m.n1.v,NaN],NTC2_OPEN:[m.n2.fresh&&m.n2.v<=.02,m.n2.v,.02],NTC2_SHORT:[m.n2.fresh&&m.n2.v>=2,m.n2.v,2],NTC2_OUT_OF_RANGE:[m.n2.fresh&&m.n2.v>.02&&m.n2.v<2&&!m.n2.valid,m.n2.v,NaN],
+ TEMP_B1_HIGH:[m.n1.valid&&m.n1.t>=45,m.n1.t,45],TEMP_B2_HIGH:[m.n2.valid&&m.n2.t>=45,m.n2.t,45],TEMP_B1_CRITICAL:[m.n1.valid&&m.n1.t>=60,m.n1.t,60],TEMP_B2_CRITICAL:[m.n2.valid&&m.n2.t>=60,m.n2.t,60],TEMP_DIFFERENCE_WARNING:[Number.isFinite(m.tempDiff)&&m.tempDiff>=8,m.tempDiff,8],TEMP_DIFFERENCE_FAULT:[Number.isFinite(m.tempDiff)&&m.tempDiff>=15,m.tempDiff,15],CELL1_UNDERVOLTAGE:[m.cell1Valid&&m.b1<=3,m.b1,3],CELL2_UNDERVOLTAGE:[m.cell2Valid&&m.b2<=3,m.b2,3],CELL1_CRITICAL_UNDERVOLTAGE:[m.cell1Valid&&m.b1<=2.7,m.b1,2.7],CELL2_CRITICAL_UNDERVOLTAGE:[m.cell2Valid&&m.b2<=2.7,m.b2,2.7],CELL1_OVERVOLTAGE:[m.cell1Valid&&m.b1>=4.25,m.b1,4.25],CELL2_OVERVOLTAGE:[m.cell2Valid&&m.b2>=4.25,m.b2,4.25],CELL1_CRITICAL_OVERVOLTAGE:[m.cell1Valid&&m.b1>=4.35,m.b1,4.35],CELL2_CRITICAL_OVERVOLTAGE:[m.cell2Valid&&m.b2>=4.35,m.b2,4.35],CELL_IMBALANCE_WARNING:[Number.isFinite(m.cellDiff)&&m.cellDiff>=.1,m.cellDiff,.1],CELL_IMBALANCE_FAULT:[Number.isFinite(m.cellDiff)&&m.cellDiff>=.2,m.cellDiff,.2],INPUT_COLLAPSE:[s.inputCollapse,m.vin,m.settings.vref-.5],HEATER1_NOT_EFFECTIVE:[s.h1Bad,NaN,.3],HEATER2_NOT_EFFECTIVE:[s.h2Bad,NaN,.3],HEATERS_NOT_EFFECTIVE:[s.bothBad,NaN,.3],HEATER_STUCK_ON_SUSPECTED:[s.stuck,NaN,NaN],WATCHDOG_RESET:[s.watchdog,NaN,NaN]};}
+function updateFaults(s,m){const cs=faultConditions(s,m);for(const [code,def] of Object.entries(faultDefs)){const [sev]=def,[condition,measured,threshold]=cs[code];let r=s.faults[code]||{condition:false,active:false,latched:false,measured:NaN,threshold:NaN};r.condition=condition;r.measured=measured;r.threshold=threshold;if(condition){r.active=true;if(sev==='Critical')r.latched=true;}else if(!r.latched)r.active=false;s.faults[code]=r;}}
+function critical(s){return Object.entries(s.faults).some(([k,r])=>r.active&&faultDefs[k][0]==='Critical');}
+function actions(s){let a=0;for(const [k,r] of Object.entries(s.faults))if(r.active)a|=faultDefs[k][2];return a;}
+function enterSolar(s,state){s.solar=state;s.solarSince=s.now;if(['WAIT_RECOVERY','OFF','WEAK'].includes(state))s.lastSolarOff=s.now;}
+function updateSystem(s,m){s.system=s.safe?'SAFE_MODE':critical(s)?'CRITICAL_FAULT':Number.isFinite(m.packSoc)&&m.packSoc<=20?'LOW_POWER':'NORMAL';}
+function updateSolar(s,m){const requested=s.auto||s.manualSolar,canInput=m.inaValid,cells=m.cell1Valid&&m.cell2Valid&&m.b1<4.25&&m.b2<4.25;if(!requested||s.safe){s.inputCollapse=false;s.solar='OFF';return;}if(!canInput||!cells){s.inputCollapse=false;s.solar='FAULT';return;}s.inputCollapse=m.vin<m.settings.vref-.5;s.solar=s.inputCollapse?'WEAK':'RUN';}
+function requests(s,m){s.reqH1=s.reqH2=s.reqB1=s.reqB2=0;if(!s.auto||!m.n1.valid||!m.n2.valid)s.heatDemand=false;else{if(m.tempMin<m.settings.heatStart)s.heatDemand=true;if(m.tempMin>=m.settings.heatStop||m.tempMax>=45)s.heatDemand=false;}if(!m.cell1Valid||!m.cell2Valid||!Number.isFinite(m.packSoc))s.noSolarHeat=false;else{if(!s.noSolarHeat&&m.packSoc>=40&&m.b1>=3.5&&m.b2>=3.5)s.noSolarHeat=true;if(s.noSolarHeat&&(m.packSoc<=35||m.b1<=3.45||m.b2<=3.45))s.noSolarHeat=false;}if(!s.auto||m.settings.balMode===0||!m.cell1Valid||!m.cell2Valid)s.balanceTarget=0;else{const d=m.b1-m.b2;if(s.balanceTarget&&Math.abs(d)<=m.settings.balStop)s.balanceTarget=0;if(!s.balanceTarget&&Math.abs(d)>=m.settings.balStart)s.balanceTarget=d>0?1:2;}const energy=s.solar==='RUN'||s.noSolarHeat;let base=0;if(energy&&s.heatDemand&&Number.isFinite(m.tempMin)){base=m.tempMin<0?.7:m.tempMin<5?.6:.45;if(m.tempMax>=15)base=Math.min(base,.3);if(m.tempDiff>=8)base*=.5;}const combined=[1,3].includes(m.settings.balMode);if(base>0){s.reqH1=s.reqH2=base;if(combined&&s.balanceTarget===1){s.reqH1=Math.min(1,base+.15);s.reqH2=Math.max(0,base-.15);}if(combined&&s.balanceTarget===2){s.reqH2=Math.min(1,base+.15);s.reqH1=Math.max(0,base-.15);}}const indep=[2,3].includes(m.settings.balMode),indepEnergy=m.cell1Valid&&m.cell2Valid&&m.b1>=3.8&&m.b2>=3.8;if(indep&&indepEnergy&&base===0){if(s.balanceTarget===1)s.reqB1=.4;if(s.balanceTarget===2)s.reqB2=.4;}if(s.manualH1)s.reqH1=Math.max(s.reqH1,.5);if(s.manualH2)s.reqH2=Math.max(s.reqH2,.5);}
+function arbitrate(s,m){let a=actions(s);if(s.safe)a|=A.ALL;const cellSafe=m.cell1Valid&&m.cell2Valid&&m.b1>3.45&&m.b2>3.45,thermalSafe=m.n1.valid&&m.n2.valid&&m.tempMax<45&&m.tempDiff<15;let h1=a&A.HEAT?0:s.reqH1,h2=a&A.HEAT?0:s.reqH2,b1=a&A.BAL?0:s.reqB1,b2=a&A.BAL?0:s.reqB2;if(!cellSafe||!thermalSafe)h1=h2=b1=b2=0;s.duty1=Math.max(h1,b1);s.duty2=Math.max(h2,b2);s.outH1=s.duty1>0;s.outH2=s.duty2>0;s.outSolar=s.solar==='RUN'&&!(a&A.SOLAR);s.outLoad=s.loadRequest&&!(a&A.LOAD);}
+function diagnostics(s,m){const requested=s.duty1>0||s.duty2>0,on=s.outH1||s.outH2,avg=m.n1.valid&&m.n2.valid?(m.n1.t+m.n2.t)/2:NaN;if(requested&&Number.isFinite(avg)){if(!s.diagStart){s.diagStart=s.now;s.diagActual=0;s.diagLast=s.now;s.diagTemp=avg;s.diagMask=(s.duty1>0?1:0)|(s.duty2>0?2:0);}const elapsed=s.now-s.diagLast;s.diagLast=s.now;if(on)s.diagActual+=elapsed;if(s.diagActual>=20000&&avg-s.diagTemp<.3){if(s.diagMask===1)s.h1Bad=true;else if(s.diagMask===2)s.h2Bad=true;else s.bothBad=true;}s.offSince=0;}else{s.diagStart=0;s.diagActual=0;s.diagMask=0;s.diagLast=s.now;if(!s.offSince&&Number.isFinite(avg)){s.offSince=s.now;s.offTemp=avg;}if(s.offSince&&s.now-s.offSince>=20000&&Number.isFinite(avg)&&avg-s.offTemp>=3)s.stuck=true;}}
+function tick(s,raw){const m=derive({...raw,settings:raw.settings});updateSolar(s,m);updateFaults(s,m);updateSystem(s,m);requests(s,m);arbitrate(s,m);return m;}
+function runFor(s,raw){return tick(s,raw);}
+/* SIM_ENGINE_END */
+
+const $=id=>document.getElementById(id);const num=id=>Number($(id).value);
+function readInputs(){return {b1:num('b1'),b2:num('b2'),t1:num('t1'),t2:num('t2'),vin:num('vin'),iin:num('iin'),ntc1Mode:$('ntc1Mode').value,ntc2Mode:$('ntc2Mode').value,ch1Mode:$('ch1Mode').value,ch2Mode:$('ch2Mode').value,mcpFound:$('mcpFound').checked,inaValid:$('inaValid').checked,settings:{heatStart:num('heatStart'),heatStop:num('heatStop'),vref:num('vref'),balStart:num('balStart'),balStop:num('balStop'),balMode:Number($('balMode').value)}};}
+let sim=makeState(),current=derive(readInputs()),snapshots=[];
+function fmt(v,d=2){return Number.isFinite(v)?v.toFixed(d):'--';}
+function log(msg){sim.events.unshift(`[STATE] ${msg}`);sim.events=sim.events.slice(0,80);$('eventLog').textContent=sim.events.join('\n');}
+function activeAndPending(){return Object.entries(sim.faults).filter(([,r])=>r.active).sort((a,b)=>(b[1].latched?1:0)-(a[1].latched?1:0));}
+function setOutput(id,on,title,detail,blocked=false){const e=$(id);e.className='output '+(on?'on':blocked?'blocked':'');e.querySelector('strong').textContent=title;e.querySelector('.pill').textContent=detail;e.querySelector('.pill').className='pill '+(on?'ok':blocked?'warn':'');}
+function render(){current=derive(readInputs());const a=actions(sim)|(sim.safe?A.ALL:0),hasActive=Object.values(sim.faults).some(r=>r.active);$('simTime').textContent='STATE';$('systemState').textContent=sim.system;$('packState').textContent=`${fmt(current.packV,2)} V · ${fmt(current.packSoc,0)}%`;$('diffState').textContent=`${fmt(current.tempDiff,1)}°C · ${fmt(current.cellDiff,3)}V`;$('actionState').textContent=a===0&&!hasActive?'NONE':actionText(a);setOutput('outSolar',sim.outSolar,sim.outSolar?'ON':'OFF',sim.solar,a&A.SOLAR);setOutput('outLoad',sim.outLoad,sim.outLoad?'ON':'OFF',sim.loadRequest?'请求已提出':'无请求',sim.loadRequest&&!sim.outLoad);setOutput('outH1',sim.outH1,sim.outH1?'ON':'OFF',`${Math.round(sim.duty1*100)}% request`,sim.reqH1>0&&sim.duty1===0);setOutput('outH2',sim.outH2,sim.outH2?'ON':'OFF',`${Math.round(sim.duty2*100)}% request`,sim.reqH2>0&&sim.duty2===0);setOutput('outBalance',sim.balanceTarget!==0,sim.balanceTarget===1?'B1 → R26':sim.balanceTarget===2?'B2 → R32':'OFF',sim.balanceTarget?'目标已锁定':'无目标');
+ const cellSafe=current.cell1Valid&&current.cell2Valid&&current.b1>3.45&&current.b2>3.45,thermalSafe=current.n1.valid&&current.n2.valid&&current.tempMax<45&&current.tempDiff<15,energy=sim.solar==='RUN'||sim.noSolarHeat;const rs=[['Solar 状态机',`${sim.solar}；输入 ${fmt(current.vin,2)} V / Vref ${fmt(current.settings.vref,1)} V`],['加热能量许可',energy?(sim.solar==='RUN'?'稳定输入可用':'电池 SOC/电压迟滞许可'):'没有稳定输入，且电池能量许可未锁定'],['电芯加热条件',cellSafe?'两节均 > 3.45 V':'被阻止：电压无效或至少一节 ≤ 3.45 V'],['温度安全条件',thermalSafe?'NTC 有效，最高温与温差合格':'被阻止：NTC、45°C 或 15°C 温差条件不合格'],['加热需求',sim.heatDemand?`需要加热；请求 H1/H2 ${Math.round(sim.reqH1*100)}% / ${Math.round(sim.reqH2*100)}%`:'没有自动加热需求'],['安全仲裁',a===0?'没有生效的输出限制':actionText(a)]];$('explain').innerHTML=rs.map(([b,t],i)=>`<div class="reason"><b>${b}</b><span>${t}</span></div>`).join('');
+ const rows=activeAndPending();$('faultRows').innerHTML=rows.length?rows.map(([code,r])=>{const [sev,,act]=faultDefs[code];return `<tr><td>${r.latched?'<span class="pill bad">ACTIVE · LATCHED</span>':'<span class="pill warn">ACTIVE</span>'}</td><td><code>${code}</code><br><span class="severity-${sev}">${sev}</span></td><td>${fmt(r.measured,3)} / 阈值 ${fmt(r.threshold,3)}</td><td>${actionText(act)}</td></tr>`}).join(''):'<tr><td colspan="4" class="empty">当前没有故障</td></tr>';
+ $('autoBtn').textContent=sim.auto?'关闭 AUTO':'开启 AUTO';$('autoBtn').className=sim.auto?'warn':'primary';$('safeBtn').disabled=sim.safe;$('exitSafeBtn').disabled=!sim.safe;}
+function evaluate(){const before=`${sim.system}|${sim.solar}|${actions(sim)}|${sim.duty1}|${sim.duty2}`;current=runFor(sim,readInputs());const after=`${sim.system}|${sim.solar}|${actions(sim)}|${sim.duty1}|${sim.duty2}`;if(before!==after)log(`状态更新：System=${sim.system}, Solar=${sim.solar}, H1/H2=${Math.round(sim.duty1*100)}%/${Math.round(sim.duty2*100)}%`);render();}
+function setValues(v){for(const [k,val] of Object.entries(v)){const e=$(k);if(!e)continue;if(e.type==='checkbox')e.checked=val;else e.value=val;}render();}
+const presets={normal:{b1:3.9,b2:3.9,t1:20,t2:20,vin:10.5,iin:300,ntc1Mode:'normal',ntc2Mode:'normal',ch1Mode:'normal',ch2Mode:'normal',mcpFound:true,inaValid:true},cold:{b1:3.9,b2:3.9,t1:-5,t2:-4,vin:10.5,iin:300,ntc1Mode:'normal',ntc2Mode:'normal'},uv:{b1:2.9,b2:3.8,t1:20,t2:20},ov:{b1:4.3,b2:4.15,t1:20,t2:20},imbalance:{b1:4.05,b2:3.82,t1:20,t2:20},hot:{b1:3.9,b2:3.9,t1:46,t2:44},ntc:{b1:3.9,b2:3.9,ntc1Mode:'open',ntc2Mode:'normal'},weak:{b1:3.9,b2:3.9,vin:8.5,iin:80,inaValid:true}};
+document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>{setValues(presets[b.dataset.preset]);evaluate();log(`已载入场景：${b.textContent}，结果已立即更新。`);});
+$('autoBtn').onclick=()=>{if(sim.safe){log('SAFE MODE 中不能开启 AUTO。');return;}sim.auto=!sim.auto;if(!sim.auto){sim.heatDemand=false;sim.balanceTarget=0;}log(`AUTO ${sim.auto?'ON':'OFF'}。`);evaluate();};$('loadBtn').onclick=()=>{sim.loadRequest=!sim.loadRequest;log(`Load 请求 ${sim.loadRequest?'ON':'OFF'}。`);evaluate();};$('solarBtn').onclick=()=>{sim.manualSolar=!sim.manualSolar;log(`Solar 请求 ${sim.manualSolar?'ON':'OFF'}。`);evaluate();};$('h1Btn').onclick=()=>{sim.manualH1=!sim.manualH1;log(`Heater1 50% 请求 ${sim.manualH1?'ON':'OFF'}。`);evaluate();};$('h2Btn').onclick=()=>{sim.manualH2=!sim.manualH2;log(`Heater2 50% 请求 ${sim.manualH2?'ON':'OFF'}。`);evaluate();};$('bothBtn').onclick=()=>{const on=!(sim.manualH1&&sim.manualH2);sim.manualH1=sim.manualH2=on;log(`双 Heater 50% 请求 ${on?'ON':'OFF'}。`);evaluate();};$('safeBtn').onclick=()=>{sim.safe=true;sim.auto=false;sim.loadRequest=false;sim.manualSolar=sim.manualH1=sim.manualH2=false;log('进入 SAFE MODE：所有请求移除。');evaluate();};$('exitSafeBtn').onclick=()=>{sim.safe=false;log('退出 SAFE MODE；AUTO 仍关闭。');evaluate();};$('clearBtn').onclick=()=>{sim.watchdog=sim.h1Bad=sim.h2Bad=sim.bothBad=sim.stuck=false;for(const r of Object.values(sim.faults))if(r.latched&&!r.condition){r.latched=false;r.active=false;}log('已清除条件消失的锁存故障。');evaluate();};$('resetBtn').onclick=()=>{sim=makeState();sim.events=['[STATE] 模拟器已复位；所有功率输出关闭，AUTO 关闭。'];evaluate();$('eventLog').textContent=sim.events.join('\n');};
+$('compareBtn').onclick=()=>{const checks=[['Solar',sim.outSolar,$('expectSolar').value],['Load',sim.outLoad,$('expectLoad').value],['H1 duty',sim.duty1>0,$('expectH1').value],['H2 duty',sim.duty2>0,$('expectH2').value],['Balance',sim.balanceTarget!==0,$('expectBalance').value]].filter(x=>x[2]!=='skip');const fails=checks.filter(([,actual,expect])=>actual!==(expect==='on'));const e=$('compareResult');if(!checks.length){e.className='compare-result';e.textContent='请至少选择一个预期输出。';return;}e.className='compare-result '+(fails.length?'fail':'pass');e.textContent=fails.length?`不符合预期：${fails.map(x=>x[0]).join('、')}。请查看上方“安全仲裁”和故障表。`:`PASS：${checks.length} 项输出均符合你的预期。`;};
+$('snapshotBtn').onclick=()=>{const r=readInputs();snapshots.push({time:sim.now/1000,b1:r.b1,b2:r.b2,t1:r.t1,t2:r.t2,vin:r.vin,system:sim.system,solarState:sim.solar,solar:+sim.outSolar,load:+sim.outLoad,h1Duty:Math.round(sim.duty1*100),h2Duty:Math.round(sim.duty2*100),balance:sim.balanceTarget,actions:actionText(actions(sim))});log(`已保存测试快照 #${snapshots.length}。`);};$('exportBtn').onclick=()=>{if(!snapshots.length){log('没有可导出的快照。');return;}const keys=Object.keys(snapshots[0]),csv=[keys.join(','),...snapshots.map(x=>keys.map(k=>JSON.stringify(x[k])).join(','))].join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='BMS_test_snapshots.csv';a.click();URL.revokeObjectURL(a.href);};
+function baseRaw(){return {b1:3.9,b2:3.9,t1:20,t2:20,vin:10.5,iin:300,ntc1Mode:'normal',ntc2Mode:'normal',ch1Mode:'normal',ch2Mode:'normal',mcpFound:true,inaValid:true,settings:{heatStart:5,heatStop:10,vref:10,balStart:.05,balStop:.02,balMode:3}};}
+function selfTests(){const results=[];let s=makeState(),r=baseRaw();runFor(s,r);results.push(['AUTO 默认为 OFF',!s.auto&&!s.outSolar]);s=makeState();r=baseRaw();s.loadRequest=true;runFor(s,r);results.push(['正常电压允许 Load 请求',s.outLoad]);s=makeState();r=baseRaw();s.loadRequest=true;r.b1=2.9;runFor(s,r);results.push(['欠压立即关闭 Load',!s.outLoad&&s.faults.CELL1_UNDERVOLTAGE.active]);s=makeState();r=baseRaw();s.auto=true;r.t1=-5;r.t2=-4;runFor(s,r);results.push(['低温且能量足够时请求加热',s.duty1>0&&s.duty2>0]);s=makeState();r=baseRaw();s.auto=true;r.b1=4.0;r.b2=3.9;runFor(s,r);results.push(['高电芯被独立均衡',s.balanceTarget===1&&s.duty1>=.4]);s=makeState();r=baseRaw();s.auto=true;runFor(s,r);results.push(['输入状态合格时 Solar 为 RUN',s.solar==='RUN'&&s.outSolar]);return results;}
+$('suiteBtn').onclick=()=>{const rs=selfTests(),pass=rs.filter(x=>x[1]).length,e=$('compareResult');e.className='compare-result '+(pass===rs.length?'pass':'fail');e.innerHTML=`内置自检 ${pass}/${rs.length} PASS：`+rs.map(x=>`${x[1]?'✓':'✗'} ${x[0]}`).join('；');};
+['b1','b2','t1','t2','vin','iin','ntc1Mode','ntc2Mode','ch1Mode','ch2Mode','mcpFound','inaValid','heatStart','heatStop','vref','balStart','balStop','balMode'].forEach(id=>$(id).addEventListener('input',evaluate));
+sim.events=['[STATE] 模拟器已复位；所有功率输出关闭，AUTO 关闭。'];evaluate();
+</script>
+</body>
+</html>
