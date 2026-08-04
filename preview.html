@@ -1,0 +1,153 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ELEC3117 BMS</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--card:#151d31;--line:#2a3856;--muted:#a9b5cc;--ok:#3fd18c;--warn:#f0b44c;--bad:#ff6673}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#08101e,#121a2e);font:14px system-ui;color:#edf3ff}
+main{max-width:1100px;margin:auto;padding:16px}h1{font-size:1.45rem;margin:0}h2{font-size:1rem;margin:0 0 10px}.sub{color:var(--muted);margin:5px 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}.card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:13px;margin-bottom:10px}
+.value{font-size:1.45rem;font-weight:700}.small{color:var(--muted);font-size:.82rem}.states{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:7px}
+.state{border:1px solid var(--line);border-radius:9px;padding:8px;text-align:center}.on{background:#174d39;border-color:#2aa875}.off{color:var(--muted)}
+.buttons{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px}button{padding:10px;border-radius:9px;border:1px solid #43577d;background:#223250;color:white;cursor:pointer}
+button.warn{background:#6e4918}button.danger{background:#762936}input,select{width:100%;padding:8px;margin-top:4px;background:#0d1527;color:white;border:1px solid var(--line);border-radius:7px}
+label{display:block;color:var(--muted)}table{width:100%;border-collapse:collapse;font-size:.82rem}th,td{text-align:left;padding:7px;border-bottom:1px solid var(--line);vertical-align:top}.critical{color:var(--bad)}.warning{color:var(--warn)}
+pre{white-space:pre-wrap;background:#080d18;padding:10px;border-radius:8px;max-height:230px;overflow:auto;color:#cbd7ee}@media(max-width:600px){main{padding:10px}table{display:block;overflow-x:auto}}
+</style></head><body><main>
+<h1>ELEC3117 2S BMS Supervisor</h1><p class="sub"><span id="conn">Local logic test</span> · BMS_ver1.0 · BQ hardware nominal charge limit 0.60 A · INA reads total input current</p>
+
+<!-- The only page addition to the original CONTROL_PAGE: measurement injection and presets. -->
+<section class="card" id="measurementPanel"><h2>Test measurements</h2><div class="grid">
+ <label>Battery 1 voltage (V)<input id="testB1" type="number" step="0.01" value="3.90"></label>
+ <label>Battery 2 voltage (V)<input id="testB2" type="number" step="0.01" value="3.90"></label>
+ <label>Battery 1 temperature (°C)<input id="testT1" type="number" step="0.5" value="20"></label>
+ <label>Battery 2 temperature (°C)<input id="testT2" type="number" step="0.5" value="20"></label>
+ <label>Input voltage (V)<input id="testVin" type="number" step="0.1" value="10.5"></label>
+ <label>Input current (mA)<input id="testIin" type="number" step="1" value="300"></label>
+ <label>CH1 / Battery 1<select id="testCh1"><option value="normal">Valid</option><option value="stale">No data</option></select></label>
+ <label>CH2 / Battery 2<select id="testCh2"><option value="normal">Valid</option><option value="stale">No data</option></select></label>
+ <label>CH3 / NTC1<select id="testNtc1"><option value="normal">Valid</option><option value="open">Open</option><option value="short">Short</option><option value="range">Out of range</option><option value="stale">No data</option></select></label>
+ <label>CH4 / NTC2<select id="testNtc2"><option value="normal">Valid</option><option value="open">Open</option><option value="short">Short</option><option value="range">Out of range</option><option value="stale">No data</option></select></label>
+ <label>MCP3424<select id="testMcp"><option value="valid">Available</option><option value="missing">Not found</option></select></label>
+ <label>INA219<select id="testIna"><option value="valid">Valid</option><option value="missing">Communication fault</option></select></label>
+ </div><h2 style="margin-top:12px">Preset</h2><div class="buttons">
+ <button data-preset="normal">Normal</button><button data-preset="cold">Cold</button>
+ <button data-preset="uv">B1 undervoltage</button><button data-preset="ov">B1 overvoltage</button>
+ <button data-preset="imbalance">Cell imbalance</button><button data-preset="hot">High temperature</button>
+ <button data-preset="ntcOpen">NTC1 open</button><button data-preset="collapse">Input collapse</button>
+ </div><p class="small">Inputs and presets are evaluated immediately against the current control state. Presets change measurements only; they do not change AUTO, Load or manual requests.</p></section>
+
+<section class="grid">
+ <div class="card"><h2>Battery 1</h2><div class="value" id="b1">-- V</div><div class="small" id="s1">SOC --%</div></div>
+ <div class="card"><h2>Battery 2</h2><div class="value" id="b2">-- V</div><div class="small" id="s2">SOC --%</div></div>
+ <div class="card"><h2>Pack</h2><div class="value" id="pack">-- V</div><div class="small" id="soc">SOC --% · ΔV --</div></div>
+ <div class="card"><h2>Input / INA219</h2><div class="value" id="vin">-- V</div><div class="small" id="pin">-- mA · -- W</div></div>
+ <div class="card"><h2>NTC1 / Battery 1</h2><div class="value" id="t1">-- °C</div><div class="small" id="ntc1">CH3 -- V</div></div>
+ <div class="card"><h2>NTC2 / Battery 2</h2><div class="value" id="t2">-- °C</div><div class="small" id="ntc2">CH4 -- V</div></div>
+</section>
+
+<section class="card"><h2>Control state</h2><div class="states">
+ <div class="state" id="sys">System<br><b>--</b></div><div class="state" id="solar">Solar<br><b>--</b></div>
+ <div class="state" id="load">Load<br><b>--</b></div><div class="state" id="h1">Heater1<br><b>--</b></div>
+ <div class="state" id="h2">Heater2<br><b>--</b></div><div class="state" id="bal">Balance<br><b>--</b></div>
+ </div><p class="small" id="thermal">Temperature min/max/difference: --</p></section>
+
+<section class="card"><h2>Protected controls</h2><div class="buttons">
+ <button onclick="act('a')">Enable automatic</button><button onclick="act('q')">Disable automatic</button>
+ <button class="warn" onclick="act('s')">Solar probe</button><button onclick="act('l')">Toggle load request</button>
+ <button class="warn" onclick="act('1')">Test Heater1 10 s</button><button class="warn" onclick="act('2')">Test Heater2 10 s</button>
+ <button class="warn" onclick="act('b')">Test both 10 s</button><button class="danger" onclick="act('0')">SAFE MODE / all off</button>
+ <button onclick="act('x')">Leave safe mode</button><button onclick="act('c')">Clear inactive faults</button>
+ <button onclick="downloadCsv()">Download CSV</button><button class="danger" onclick="act('w')">Wi-Fi off</button>
+ </div><pre id="log">Dashboard ready.</pre></section>
+
+<section class="card"><h2>Active faults</h2><div style="overflow:auto"><table><thead><tr><th>Code / severity</th><th>Location</th><th>Evidence</th><th>Automatic response</th></tr></thead><tbody id="faults"></tbody></table></div></section>
+
+<section class="card"><h2>Editable settings</h2><div class="grid">
+ <label>Heat start °C<input id="heatStart" type="number" step="0.5" min="-10" max="15" value="5"></label>
+ <label>Heat stop °C<input id="heatStop" type="number" step="0.5" min="-8" max="25" value="10"></label>
+ <label>MPPT Vref<input id="vref" type="number" step="0.1" min="6" max="14" value="10"></label>
+ <label>Balance start ΔV<input id="balStart" type="number" step="0.005" min="0.03" max="0.15" value="0.05"></label>
+ <label>Balance stop ΔV<input id="balStop" type="number" step="0.005" min="0.01" max="0.14" value="0.02"></label>
+ <label>Probe interval s<input id="probeS" type="number" step="1" min="2" max="60" value="10"></label>
+ <label>Probe mode<select id="probeMode"><option value="0">Voltage recovery</option><option value="1">Fixed interval</option></select></label>
+ <label>Balance mode<select id="balMode"><option value="0">Off</option><option value="1">During heating only</option><option value="2">Independent only</option><option value="3" selected>Both</option></select></label>
+ </div><button style="margin-top:10px" onclick="saveConfig()">Validate and save settings</button>
+ <p class="small">Absolute voltage, temperature, sensor-validity and 30 s runtime limits cannot be changed here.</p></section>
+</main><script>
+/* LOGIC_ENGINE_START */
+// Direct state-based transcription of the fixed thresholds, fault actions,
+// heating, balancing and final arbitration in BMS_ver1.0.ino.
+const C={CELL_UV:3,CELL_CUV:2.7,CELL_OV:4.25,CELL_COV:4.35,CELL_MIN:2.3,CELL_MAX:4.5,HEAT_CELL_MIN:3.45,BAL_CELL_MIN:3.8,TEMP_REDUCE:15,TEMP_STOP:45,TEMP_CRIT:60,TEMP_DIFF_WARN:8,TEMP_DIFF_FAULT:15,CELL_DIFF_WARN:.1,CELL_DIFF_FAULT:.2};
+const A={NONE:0,SOLAR:1,LOAD:2,HEAT:4,BAL:8,ALL:15};
+const faultDefs={
+ MCP3424_NOT_FOUND:{severity:'Critical',action:A.ALL,location:'MCP3424 / ADC I2C bus'},
+ INA219_COMMUNICATION_FAULT:{severity:'Recoverable',action:A.SOLAR,location:'INA219 / input I2C bus'},
+ CELL1_ADC_FAULT:{severity:'Critical',action:A.ALL,location:'Battery 1 / MCP3424 CH1'},CELL2_ADC_FAULT:{severity:'Critical',action:A.ALL,location:'Battery 2 / MCP3424 CH2'},
+ NTC1_ADC_FAULT:{severity:'Recoverable',action:A.LOAD|A.HEAT|A.BAL,location:'NTC1 on Battery 1 / MCP3424 CH3'},NTC2_ADC_FAULT:{severity:'Recoverable',action:A.LOAD|A.HEAT|A.BAL,location:'NTC2 on Battery 2 / MCP3424 CH4'},
+ NTC1_OPEN:{severity:'Recoverable',action:A.LOAD|A.HEAT|A.BAL,location:'NTC1 on Battery 1 / MCP3424 CH3'},NTC1_SHORT:{severity:'Recoverable',action:A.LOAD|A.HEAT|A.BAL,location:'NTC1 on Battery 1 / MCP3424 CH3'},NTC1_OUT_OF_RANGE:{severity:'Recoverable',action:A.LOAD|A.HEAT|A.BAL,location:'NTC1 on Battery 1 / MCP3424 CH3'},
+ NTC2_OPEN:{severity:'Recoverable',action:A.LOAD|A.HEAT|A.BAL,location:'NTC2 on Battery 2 / MCP3424 CH4'},NTC2_SHORT:{severity:'Recoverable',action:A.LOAD|A.HEAT|A.BAL,location:'NTC2 on Battery 2 / MCP3424 CH4'},NTC2_OUT_OF_RANGE:{severity:'Recoverable',action:A.LOAD|A.HEAT|A.BAL,location:'NTC2 on Battery 2 / MCP3424 CH4'},
+ TEMP_B1_HIGH:{severity:'Recoverable',action:A.ALL,location:'Battery 1 temperature / NTC1'},TEMP_B2_HIGH:{severity:'Recoverable',action:A.ALL,location:'Battery 2 temperature / NTC2'},
+ TEMP_B1_CRITICAL:{severity:'Critical',action:A.ALL,location:'Battery 1 temperature / NTC1'},TEMP_B2_CRITICAL:{severity:'Critical',action:A.ALL,location:'Battery 2 temperature / NTC2'},
+ TEMP_DIFFERENCE_WARNING:{severity:'Warning',action:A.NONE,location:'Battery pack thermal distribution'},TEMP_DIFFERENCE_FAULT:{severity:'Recoverable',action:A.LOAD|A.HEAT|A.BAL,location:'Battery pack thermal distribution'},
+ CELL1_UNDERVOLTAGE:{severity:'Recoverable',action:A.LOAD|A.HEAT|A.BAL,location:'Battery 1 / MCP3424 CH1'},CELL2_UNDERVOLTAGE:{severity:'Recoverable',action:A.LOAD|A.HEAT|A.BAL,location:'Battery 2 / MCP3424 CH2'},
+ CELL1_CRITICAL_UNDERVOLTAGE:{severity:'Critical',action:A.LOAD|A.HEAT|A.BAL,location:'Battery 1 / MCP3424 CH1'},CELL2_CRITICAL_UNDERVOLTAGE:{severity:'Critical',action:A.LOAD|A.HEAT|A.BAL,location:'Battery 2 / MCP3424 CH2'},
+ CELL1_OVERVOLTAGE:{severity:'Recoverable',action:A.SOLAR,location:'Battery 1 / MCP3424 CH1'},CELL2_OVERVOLTAGE:{severity:'Recoverable',action:A.SOLAR,location:'Battery 2 / MCP3424 CH2'},
+ CELL1_CRITICAL_OVERVOLTAGE:{severity:'Critical',action:A.SOLAR,location:'Battery 1 / MCP3424 CH1'},CELL2_CRITICAL_OVERVOLTAGE:{severity:'Critical',action:A.SOLAR,location:'Battery 2 / MCP3424 CH2'},
+ CELL_IMBALANCE_WARNING:{severity:'Warning',action:A.NONE,location:'Battery 1 versus Battery 2'},CELL_IMBALANCE_FAULT:{severity:'Recoverable',action:A.LOAD|A.HEAT,location:'Battery 1 versus Battery 2'},
+ INPUT_COLLAPSE:{severity:'Recoverable',action:A.SOLAR,location:'External input / solar DC-DC path'}
+};
+function makeState(){return {system:'NORMAL',solar:'OFF',auto:false,safe:false,loadRequest:false,loadColdLock:false,loadSafetyLock:false,loadLockReason:'',manualSolar:false,manualH1:false,manualH2:false,inputCollapse:false,heatDemand:false,noSolarHeat:false,balanceTarget:0,reqH1:0,reqH2:0,reqB1:0,reqB2:0,duty1:0,duty2:0,outSolar:false,outLoad:false,outH1:false,outH2:false,faults:{}}}
+function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v))}
+function voltageToSoc(v){const vs=[3,3.3,3.5,3.6,3.7,3.8,3.9,4,4.1,4.2],ss=[0,2,8,15,30,50,65,80,90,100];if(!Number.isFinite(v))return NaN;if(v<=3)return 0;if(v>=4.2)return 100;for(let i=0;i<9;i++)if(v<=vs[i+1])return ss[i]+(v-vs[i])/(vs[i+1]-vs[i])*(ss[i+1]-ss[i]);return NaN}
+function tempToNtcV(t){const r=10000*Math.exp(3492*(1/(t+273.15)-1/298.15));return 3.3*3300/(r+3300)}
+function ntc(mode,t){if(mode==='stale')return {fresh:false,v:NaN,valid:false,t:NaN};if(mode==='open')return {fresh:true,v:.01,valid:false,t:NaN};if(mode==='short')return {fresh:true,v:2.02,valid:false,t:NaN};if(mode==='range')return {fresh:true,v:1,valid:false,t:NaN};const v=tempToNtcV(t),valid=Number.isFinite(t)&&t>=-30&&t<=80&&v>.02&&v<2;return {fresh:true,v,valid,t:valid?t:NaN}}
+function derive(raw){const cell1Fresh=raw.ch1Mode==='normal',cell2Fresh=raw.ch2Mode==='normal',cell1Valid=cell1Fresh&&raw.b1>=C.CELL_MIN&&raw.b1<=C.CELL_MAX,cell2Valid=cell2Fresh&&raw.b2>=C.CELL_MIN&&raw.b2<=C.CELL_MAX,n1=ntc(raw.ntc1Mode,raw.t1),n2=ntc(raw.ntc2Mode,raw.t2),both=n1.valid&&n2.valid,soc1=cell1Valid?voltageToSoc(raw.b1):NaN,soc2=cell2Valid?voltageToSoc(raw.b2):NaN;return {...raw,cell1Fresh,cell2Fresh,cell1Valid,cell2Valid,n1,n2,packV:cell1Valid&&cell2Valid?raw.b1+raw.b2:NaN,cellDiff:cell1Valid&&cell2Valid?Math.abs(raw.b1-raw.b2):NaN,tempMin:both?Math.min(n1.t,n2.t):NaN,tempMax:both?Math.max(n1.t,n2.t):NaN,tempDiff:both?Math.abs(n1.t-n2.t):NaN,soc1,soc2,packSoc:cell1Valid&&cell2Valid?Math.min(soc1,soc2):NaN,inputPower:raw.vin*raw.iin/1000}}
+function faultConditions(s,m){return {
+ MCP3424_NOT_FOUND:[!m.mcpFound,NaN,NaN],INA219_COMMUNICATION_FAULT:[!m.inaValid,NaN,NaN],CELL1_ADC_FAULT:[!m.cell1Fresh||!m.cell1Valid,m.b1,C.CELL_MIN],CELL2_ADC_FAULT:[!m.cell2Fresh||!m.cell2Valid,m.b2,C.CELL_MIN],
+ NTC1_ADC_FAULT:[!m.n1.fresh,m.n1.v,NaN],NTC2_ADC_FAULT:[!m.n2.fresh,m.n2.v,NaN],NTC1_OPEN:[m.n1.fresh&&m.n1.v<=.02,m.n1.v,.02],NTC1_SHORT:[m.n1.fresh&&m.n1.v>=2,m.n1.v,2],NTC1_OUT_OF_RANGE:[m.n1.fresh&&m.n1.v>.02&&m.n1.v<2&&!m.n1.valid,m.n1.v,NaN],NTC2_OPEN:[m.n2.fresh&&m.n2.v<=.02,m.n2.v,.02],NTC2_SHORT:[m.n2.fresh&&m.n2.v>=2,m.n2.v,2],NTC2_OUT_OF_RANGE:[m.n2.fresh&&m.n2.v>.02&&m.n2.v<2&&!m.n2.valid,m.n2.v,NaN],
+ TEMP_B1_HIGH:[m.n1.valid&&m.n1.t>=C.TEMP_STOP,m.n1.t,C.TEMP_STOP],TEMP_B2_HIGH:[m.n2.valid&&m.n2.t>=C.TEMP_STOP,m.n2.t,C.TEMP_STOP],TEMP_B1_CRITICAL:[m.n1.valid&&m.n1.t>=C.TEMP_CRIT,m.n1.t,C.TEMP_CRIT],TEMP_B2_CRITICAL:[m.n2.valid&&m.n2.t>=C.TEMP_CRIT,m.n2.t,C.TEMP_CRIT],TEMP_DIFFERENCE_WARNING:[Number.isFinite(m.tempDiff)&&m.tempDiff>=C.TEMP_DIFF_WARN,m.tempDiff,C.TEMP_DIFF_WARN],TEMP_DIFFERENCE_FAULT:[Number.isFinite(m.tempDiff)&&m.tempDiff>=C.TEMP_DIFF_FAULT,m.tempDiff,C.TEMP_DIFF_FAULT],
+ CELL1_UNDERVOLTAGE:[m.cell1Valid&&m.b1<=C.CELL_UV,m.b1,C.CELL_UV],CELL2_UNDERVOLTAGE:[m.cell2Valid&&m.b2<=C.CELL_UV,m.b2,C.CELL_UV],CELL1_CRITICAL_UNDERVOLTAGE:[m.cell1Valid&&m.b1<=C.CELL_CUV,m.b1,C.CELL_CUV],CELL2_CRITICAL_UNDERVOLTAGE:[m.cell2Valid&&m.b2<=C.CELL_CUV,m.b2,C.CELL_CUV],CELL1_OVERVOLTAGE:[m.cell1Valid&&m.b1>=C.CELL_OV,m.b1,C.CELL_OV],CELL2_OVERVOLTAGE:[m.cell2Valid&&m.b2>=C.CELL_OV,m.b2,C.CELL_OV],CELL1_CRITICAL_OVERVOLTAGE:[m.cell1Valid&&m.b1>=C.CELL_COV,m.b1,C.CELL_COV],CELL2_CRITICAL_OVERVOLTAGE:[m.cell2Valid&&m.b2>=C.CELL_COV,m.b2,C.CELL_COV],CELL_IMBALANCE_WARNING:[Number.isFinite(m.cellDiff)&&m.cellDiff>=C.CELL_DIFF_WARN,m.cellDiff,C.CELL_DIFF_WARN],CELL_IMBALANCE_FAULT:[Number.isFinite(m.cellDiff)&&m.cellDiff>=C.CELL_DIFF_FAULT,m.cellDiff,C.CELL_DIFF_FAULT],INPUT_COLLAPSE:[s.inputCollapse,m.vin,m.settings.vref-.5]
+}}
+function updateFaults(s,m){const conditions=faultConditions(s,m);for(const [code,def] of Object.entries(faultDefs)){const [condition,measured,threshold]=conditions[code],r=s.faults[code]||{condition:false,active:false,latched:false,measured:NaN,threshold:NaN};r.condition=condition;r.measured=measured;r.threshold=threshold;if(condition){r.active=true;if(def.severity==='Critical')r.latched=true}else if(!r.latched)r.active=false;s.faults[code]=r}}
+function anyCritical(s){return Object.entries(s.faults).some(([code,r])=>r.active&&faultDefs[code].severity==='Critical')}
+function combinedActions(s){let mask=0;for(const [code,r] of Object.entries(s.faults))if(r.active)mask|=faultDefs[code].action;return mask}
+function updateSolar(s,m){const requested=s.auto||s.manualSolar,cells=m.cell1Valid&&m.cell2Valid&&m.b1<C.CELL_OV&&m.b2<C.CELL_OV;if(!requested||s.safe){s.inputCollapse=false;s.solar='OFF';return}if(!m.inaValid||!cells){s.inputCollapse=false;s.solar='FAULT';return}s.inputCollapse=m.vin<m.settings.vref-.5;s.solar=s.inputCollapse?'WEAK':'RUN'}
+function updateRequests(s,m){s.reqH1=s.reqH2=s.reqB1=s.reqB2=0;if(!s.auto||!m.n1.valid||!m.n2.valid)s.heatDemand=false;else{if(m.tempMin<m.settings.heatStart)s.heatDemand=true;if(m.tempMin>=m.settings.heatStop||m.tempMax>=C.TEMP_STOP)s.heatDemand=false}if(!m.cell1Valid||!m.cell2Valid||!Number.isFinite(m.packSoc))s.noSolarHeat=false;else{if(!s.noSolarHeat&&m.packSoc>=40&&m.b1>=3.5&&m.b2>=3.5)s.noSolarHeat=true;if(s.noSolarHeat&&(m.packSoc<=35||m.b1<=3.45||m.b2<=3.45))s.noSolarHeat=false}if(!s.auto||m.settings.balMode===0||!m.cell1Valid||!m.cell2Valid)s.balanceTarget=0;else{const d=m.b1-m.b2;if(s.balanceTarget&&Math.abs(d)<=m.settings.balStop)s.balanceTarget=0;if(!s.balanceTarget&&Math.abs(d)>=m.settings.balStart)s.balanceTarget=d>0?1:2}const baseEnergy=s.solar==='RUN'||s.noSolarHeat;let base=0;if(baseEnergy&&s.heatDemand&&Number.isFinite(m.tempMin)){base=m.tempMin<0?.7:m.tempMin<5?.6:.45;if(m.tempMax>=C.TEMP_REDUCE)base=Math.min(base,.3);if(m.tempDiff>=C.TEMP_DIFF_WARN)base*=.5}if(base>0){s.reqH1=s.reqH2=base;if([1,3].includes(m.settings.balMode)&&s.balanceTarget===1){s.reqH1=Math.min(1,base+.15);s.reqH2=Math.max(0,base-.15)}if([1,3].includes(m.settings.balMode)&&s.balanceTarget===2){s.reqH2=Math.min(1,base+.15);s.reqH1=Math.max(0,base-.15)}}const independent=[2,3].includes(m.settings.balMode),energy=m.cell1Valid&&m.cell2Valid&&m.b1>=C.BAL_CELL_MIN&&m.b2>=C.BAL_CELL_MIN;if(independent&&energy&&base===0){if(s.balanceTarget===1)s.reqB1=.4;if(s.balanceTarget===2)s.reqB2=.4}if(s.manualH1)s.reqH1=Math.max(s.reqH1,.5);if(s.manualH2)s.reqH2=Math.max(s.reqH2,.5)}
+function arbitrate(s,m){let mask=combinedActions(s);if(s.safe)mask|=A.ALL;const cellSafe=m.cell1Valid&&m.cell2Valid&&m.b1>C.HEAT_CELL_MIN&&m.b2>C.HEAT_CELL_MIN,thermalSafe=m.n1.valid&&m.n2.valid&&m.tempMax<C.TEMP_STOP&&m.tempDiff<C.TEMP_DIFF_FAULT;let h1=mask&A.HEAT?0:s.reqH1,h2=mask&A.HEAT?0:s.reqH2,b1=mask&A.BAL?0:s.reqB1,b2=mask&A.BAL?0:s.reqB2;if(!cellSafe||!thermalSafe)h1=h2=b1=b2=0;s.duty1=Math.max(h1,b1);s.duty2=Math.max(h2,b2);s.outH1=s.duty1>0;s.outH2=s.duty2>0;s.outSolar=s.solar==='RUN'&&!(mask&A.SOLAR);
+ if(m.n1.valid&&m.n2.valid){if(m.tempMin<m.settings.heatStart)s.loadColdLock=true;else if(m.tempMin>=m.settings.heatStop)s.loadColdLock=false}else s.loadColdLock=false;
+ const criticalLock=anyCritical(s),sensorLock=!m.cell1Valid||!m.cell2Valid||!m.n1.valid||!m.n2.valid,faultLock=Boolean(mask&A.LOAD),highTempLock=Number.isFinite(m.tempMax)&&m.tempMax>=C.TEMP_STOP,tempDiffLock=Number.isFinite(m.tempDiff)&&m.tempDiff>=C.TEMP_DIFF_FAULT;
+ s.loadSafetyLock=s.safe||criticalLock||sensorLock||faultLock||s.loadColdLock||highTempLock||tempDiffLock;
+ s.loadLockReason=s.safe?'SAFE MODE':criticalLock?'critical fault':sensorLock?'invalid safety measurement':s.loadColdLock?'low temperature':highTempLock?'high temperature':tempDiffLock?'temperature difference':faultLock?'active protection fault':'';
+ s.outLoad=s.loadRequest&&!s.loadSafetyLock}
+function evaluateState(s,raw){const m=derive(raw);updateSolar(s,m);updateFaults(s,m);s.system=s.safe?'SAFE_MODE':anyCritical(s)?'CRITICAL_FAULT':Number.isFinite(m.packSoc)&&m.packSoc<=20?'LOW_POWER':'NORMAL';updateRequests(s,m);arbitrate(s,m);return m}
+/* LOGIC_ENGINE_END */
+
+const $=id=>document.getElementById(id),num=id=>Number($(id).value);let state=makeState(),measurement;
+function readInputs(){return {b1:num('testB1'),b2:num('testB2'),t1:num('testT1'),t2:num('testT2'),vin:num('testVin'),iin:num('testIin'),ch1Mode:$('testCh1').value,ch2Mode:$('testCh2').value,ntc1Mode:$('testNtc1').value,ntc2Mode:$('testNtc2').value,mcpFound:$('testMcp').value==='valid',inaValid:$('testIna').value==='valid',settings:{heatStart:num('heatStart'),heatStop:num('heatStop'),vref:num('vref'),balStart:num('balStart'),balStop:num('balStop'),probeS:num('probeS'),probeMode:Number($('probeMode').value),balMode:Number($('balMode').value)}}}
+const fmt=(v,d,u='')=>Number.isFinite(v)?v.toFixed(d)+u:'--'+u;
+function outputState(id,on,label){const e=$(id);e.className='state '+(on?'on':'off');e.querySelector('b').textContent=label??(on?'ON':'OFF')}
+function actionText(mask){if(mask===A.NONE)return 'Warning only; continue monitoring';if(mask===A.ALL)return 'Solar, load, heating and balancing disabled';if(mask===A.SOLAR)return 'Solar EN disabled';if(mask===(A.HEAT|A.BAL))return 'Both heaters and balancing disabled';if(mask===(A.LOAD|A.HEAT|A.BAL))return 'Load, both heaters and balancing disabled; charging may recover cells';if(mask===(A.SOLAR|A.HEAT|A.BAL))return 'Solar, both heaters and balancing disabled';if(mask===(A.LOAD|A.HEAT))return 'Load and normal heating disabled; safe balancing may continue';if(mask===A.HEAT)return 'Normal heating disabled';return 'Related power functions restricted'}
+function balanceName(){return state.balanceTarget===1?'B1_HIGH_R26':state.balanceTarget===2?'B2_HIGH_R32':'OFF'}
+function chargingEstimate(){if(!measurement.inaValid||!state.outSolar)return 'INPUT_INACTIVE';if(measurement.b1>=4.15&&measurement.b2>=4.15&&measurement.iin<80)return 'NEAR_FULL_ESTIMATE';if(measurement.iin>50)return 'CHARGING_LIKELY';return 'CHARGING_PATH_UNCERTAIN'}
+function socConfidence(){if(!measurement.cell1Valid||!measurement.cell2Valid)return 'UNAVAILABLE';if(state.outSolar||state.outH1||state.outH2)return 'LOW';if(state.outLoad)return 'MEDIUM';return 'HIGH'}
+function render(){
+ $('conn').textContent='Local test · '+state.system+(state.auto?' · AUTO ON':' · AUTO OFF');
+ $('b1').textContent=fmt(measurement.b1,3,' V');$('b2').textContent=fmt(measurement.b2,3,' V');$('pack').textContent=fmt(measurement.packV,3,' V');
+ $('s1').textContent='SOC '+fmt(measurement.soc1,1,'%');$('s2').textContent='SOC '+fmt(measurement.soc2,1,'%');const limiting=!measurement.cell1Valid||!measurement.cell2Valid?'UNKNOWN':measurement.soc1<=measurement.soc2?'B1':'B2';$('soc').textContent='SOC '+fmt(measurement.packSoc,1,'%')+' · '+socConfidence()+' · limiting '+limiting+' · ΔV '+fmt(measurement.cellDiff,3,' V');
+ $('vin').textContent=fmt(measurement.vin,3,' V');$('pin').textContent=fmt(measurement.iin,1,' mA')+' · '+fmt(measurement.inputPower,3,' W')+' · '+chargingEstimate();
+ $('t1').textContent=fmt(measurement.n1.t,2,' °C');$('t2').textContent=fmt(measurement.n2.t,2,' °C');$('ntc1').textContent='CH3 '+fmt(measurement.n1.v,4,' V');$('ntc2').textContent='CH4 '+fmt(measurement.n2.v,4,' V');
+ outputState('sys',state.system==='NORMAL',state.system);outputState('solar',state.outSolar,state.solar);outputState('load',state.outLoad,state.loadSafetyLock?'LOCKED':state.outLoad?'ON':'OFF');outputState('h1',state.outH1,fmt(state.duty1*100,0,'%'));outputState('h2',state.outH2,fmt(state.duty2*100,0,'%'));outputState('bal',state.balanceTarget!==0,balanceName());
+ $('thermal').textContent='Temperature min/max/difference: '+fmt(measurement.tempMin,2)+' / '+fmt(measurement.tempMax,2)+' / '+fmt(measurement.tempDiff,2)+' °C · Load safety: '+(state.loadSafetyLock?'LOCKED — '+state.loadLockReason:'READY');
+ const rows=Object.entries(state.faults).filter(([,r])=>r.active);$('faults').innerHTML=rows.length?rows.map(([code,r])=>{const def=faultDefs[code];return `<tr><td class="${def.severity.toLowerCase()}"><b>${code}</b><br>${def.severity}${r.latched?' · latched':''}</td><td>${def.location}</td><td>${fmt(r.measured,3)} / limit ${fmt(r.threshold,3)}</td><td>${actionText(def.action)}</td></tr>`}).join(''):'<tr><td colspan="4">No active fault</td></tr>';
+}
+function refresh(){measurement=evaluateState(state,readInputs());render()}
+function message(text){$('log').textContent=text}
+function act(command){if(command==='0'&&!confirm('Enter SAFE MODE and turn all power outputs off?'))return;switch(command){case'a':if(state.safe){message('Cannot enable automatic control while SAFE MODE is active.');return}state.auto=true;message('Automatic control enabled. Safety arbitration remains active.');break;case'q':state.auto=false;state.heatDemand=false;state.balanceTarget=0;message('Automatic control disabled. Existing manual Load request is unchanged.');break;case's':state.manualSolar=true;message('Protected Solar probe requested. Current INA, cell voltage and fault checks apply.');break;case'l':state.loadRequest=!state.loadRequest;message('Load request '+(state.loadRequest?'ON':'OFF')+'. Final output depends on safety arbitration.');break;case'1':state.manualH1=true;message('Protected Heater1/R26 state request applied at 50% duty.');break;case'2':state.manualH2=true;message('Protected Heater2/R32 state request applied at 50% duty.');break;case'b':state.manualH1=state.manualH2=true;message('Protected two-heater state request applied at 50% duty.');break;case'0':state.safe=true;state.auto=false;state.loadRequest=state.manualSolar=state.manualH1=state.manualH2=false;message('SAFE MODE entered. All power requests removed and outputs OFF.');break;case'x':state.safe=false;message('SAFE MODE cleared. Automatic control remains OFF; active faults still block outputs.');break;case'c':for(const r of Object.values(state.faults))if(r.latched&&!r.condition){r.latched=false;r.active=false}message('Inactive latched faults cleared. Present fault conditions remain active.');break;case'w':message('Local test page has no ESP32 Wi-Fi connection.');break}refresh()}
+function saveConfig(){let heatStart=clamp(num('heatStart'),-10,15),heatStop=clamp(num('heatStop'),heatStart+2,25),vref=clamp(num('vref'),6,14),balStart=clamp(num('balStart'),.03,.15),balStop=clamp(num('balStop'),.01,balStart-.01),probeS=clamp(Math.round(num('probeS')),2,60);$('heatStart').value=heatStart;$('heatStop').value=heatStop;$('vref').value=vref;$('balStart').value=balStart;$('balStop').value=balStop;$('probeS').value=probeS;message('Settings validated and applied to the local logic test.');refresh()}
+function downloadCsv(){const cells=['b1_v,b2_v,pack_v,t1_c,t2_c,input_v,input_ma,system,solar_state,solar,load,h1_duty,h2_duty,balance',measurement.b1,measurement.b2,measurement.packV,measurement.n1.t,measurement.n2.t,measurement.vin,measurement.iin,state.system,state.solar,+state.outSolar,+state.outLoad,Math.round(state.duty1*100),Math.round(state.duty2*100),balanceName()];const csv=cells.slice(0,1)+'\n'+cells.slice(1).join(',');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='BMS_test_state.csv';a.click();URL.revokeObjectURL(a.href)}
+const baseMeasurements={testB1:3.9,testB2:3.9,testT1:20,testT2:20,testVin:10.5,testIin:300,testCh1:'normal',testCh2:'normal',testNtc1:'normal',testNtc2:'normal',testMcp:'valid',testIna:'valid'};
+const presets={normal:{},cold:{testT1:-5,testT2:-4},uv:{testB1:2.9,testB2:3.8},ov:{testB1:4.3,testB2:4.15},imbalance:{testB1:4.05,testB2:3.82},hot:{testT1:46,testT2:44},ntcOpen:{testNtc1:'open'},collapse:{testVin:8.5,testIin:80}};
+function setMeasurements(values){const all={...baseMeasurements,...values};for(const [id,value] of Object.entries(all))$(id).value=value;refresh()}
+document.querySelectorAll('[data-preset]').forEach(button=>button.addEventListener('click',()=>{setMeasurements(presets[button.dataset.preset]);message('Preset loaded: '+button.textContent+'. Control requests were not changed.')}));
+['testB1','testB2','testT1','testT2','testVin','testIin','testCh1','testCh2','testNtc1','testNtc2','testMcp','testIna'].forEach(id=>$(id).addEventListener('input',refresh));
+refresh();
+</script></body></html>
